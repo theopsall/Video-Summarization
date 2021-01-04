@@ -8,16 +8,15 @@ def crawl_directory(directory) -> list:
         Args:
             directory (str) : Audio files directory to crawl
         Returns:
-            tree (list)     : A list with all the filepaths
+            A generator with all the filepaths
     """
-    tree = []
     subdirs = [folder[0] for folder in os.walk(directory)]
 
     for subdir in subdirs:
         files = next(os.walk(subdir))[2]
         for _file in files:
-            tree.append(os.path.join(subdir, _file))
-    return tree
+            yield os.path.join(subdir, _file)
+
 
 
 def is_wav(filename) -> bool:
