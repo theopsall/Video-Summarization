@@ -8,19 +8,17 @@ def crawl_directory(directory):
         Args:
             directory (str) : The directory to crawl
         Returns:
-            tree (list)     : A list with all the filepaths
+            A list with all the filepaths
     """
-    tree = ()
     subdirs = [folder[0] for folder in os.walk(directory)]
 
     for subdir in subdirs:
         files = next(os.walk(subdir))[2]
         for _file in files:
             yield os.path.join(subdir, _file)
-    return tree
 
 def move_npys(tree, dst_dir):
-    for filename in tree:
+    for filename n tree:
         if filename.endswith(".npy"):
             destination = os.path.join(dst_dir, filename.split(os.sep)[-2])
             if not os.path.isdir(destination):

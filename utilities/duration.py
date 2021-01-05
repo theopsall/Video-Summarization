@@ -1,10 +1,13 @@
 import os
 import cv2
+import argparse
 import shutil
 
 original_dataset = "/media/theo/Data/PycharmProjects/Video-Summarization/DATA/Video/"
 new_dataset_name = "/Video_small/"
 
+
+# TODO use crawl directory from utilities directory
 
 def crawl_directory(directory):
     """Crawling data directory
@@ -13,14 +16,13 @@ def crawl_directory(directory):
         Returns:
             tree (list)     : A list with all the filepaths
     """
-    tree = []
     subdirs = [folder[0] for folder in os.walk(directory)]
 
     for subdir in subdirs:
         files = next(os.walk(subdir))[2]
         for _file in files:
-            tree.append(os.path.join(subdir, _file))
-    return tree
+            yield os.path.join(subdir, _file)
+
 
 def get_duration(filename):
 
@@ -32,14 +34,26 @@ def get_duration(filename):
     return frame_count, fps
 
 
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", required=True,
+                        help="Input folder with Videos")
+
+    return parser.parse_args()
+
+
+def main():
+    pass
+
+
 # 15 minutes = 900 seconds
 if __name__ == '__main__':
     original_tree = crawl_directory(original_dataset)
     for filename in original_tree:
         frame_count, fps = get_duration(filename)
-        if fps!= 0:
+        if fps != 0:
             duration = frame_count/fps
-            if (duration <=  900):
+            if (duration <= 900):
                 destination = filename.replace("/Video/", new_dataset_name)
                 dst_dir = os.path.join(*destination.split(os.sep)[-3:-1])
                 if not os.path.exists(dst_dir):

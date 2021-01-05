@@ -58,6 +58,16 @@ def deEmojify(text):
     return regrex_pattern.sub(r'',text)
 
 
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", required=True,
+                        help="Input folder with Videos")
+
+    return parser.parse_args()
+
+def main():
+    pass
+
 if __name__ == "__main__":
 	
 	VIDEO = "/media/theo/Hard Disk 2/PyCharm/Video-Summarization/DATA/Video_smaller"
