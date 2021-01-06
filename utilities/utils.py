@@ -3,20 +3,21 @@ import os
 import scipy.io.wavfile as wavfile
 
 
-def crawl_directory(directory) -> list:
+def crawl_directory(directory: str) -> list:
     """Crawling data directory
         Args:
-            directory (str) : Audio files directory to crawl
+            directory (str) : The directory to crawl
         Returns:
-            A generator with all the filepaths
+            tree (list)     : A list with all the filepaths
     """
+    tree = []
     subdirs = [folder[0] for folder in os.walk(directory)]
 
     for subdir in subdirs:
         files = next(os.walk(subdir))[2]
         for _file in files:
-            yield os.path.join(subdir, _file)
-
+            tree.append(os.path.join(subdir, _file))
+    return tree
 
 
 def is_wav(filename) -> bool:
@@ -73,6 +74,7 @@ def read_data(tree) -> list:
             audio.append(wavfile.read(filename))
 
     return audio
+
 
 def split_data():
     pass
