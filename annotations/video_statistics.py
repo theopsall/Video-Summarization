@@ -13,9 +13,13 @@ def parser() -> argparse.Namespace
     Returns:
         [argparse.Namespace]: The parsed arguments
     """
+    usage_example = """Example of use
+        python3 user_statistics.py -l Annotated_31_12_21"""
 
     parser = argparse.ArgumentParser(
-        description="Extract Video statistics")
+        description="Extract Video statistics",
+        epilog=usage_example,
+        formatter_class=argparse.RawTextHelpFormatter)
 
     parser.add_argument("-l", "--labels", required=True, help="Labels directory")
 
