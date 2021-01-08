@@ -7,19 +7,31 @@ sys.path.insert(0, os.path.join(
 from utilities.utils import crawl_directory
 
 def parser() -> argparse.Namespace
+    """
+    Handling and parsing the command line arguments
+
+    Returns:
+        [argparse.Namespace]: The parsed arguments
+    """
 
     parser = argparse.ArgumentParser(
         description="Extract Video statistics")
 
-    parser.add_argument("-l", "--labels", required=True, help="Timestamp file")
-    parser.add_argument("-o", "--output", required=True,
-                        help="Output directory for annotations matrices")
+    parser.add_argument("-l", "--labels", required=True, help="Labels directory")
 
     return parser.parse_args()
 
 
 def main(annotations: str) -> None:
+    """
+    Parsing annotations files counting the number of annotated videos
 
+    Args:
+        annotations (str): The input directory path containing the annotation files
+
+    Returns:
+        None
+    """
     videos_stats = {}
     annotations = crawl_directory(annotations)
     for annotation_file in annotations:
