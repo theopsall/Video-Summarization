@@ -140,8 +140,8 @@ def parse_arguments() -> argparse.Namespace:
                                      epilog=usage_example,
                                      formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument("-i", "--input", required=True, help="Video file")
-    parser.add_argument("-l", "--labels", required=True, help="Timestamp file")
+    parser.add_argument("-i", "--input", required=True, help="Videos directory")
+    parser.add_argument("-l", "--labels", required=True, help="Timestamps directory")
     parser.add_argument("-o", "--output", required=True,
                         help="Output directory for annotations matrices")
 
