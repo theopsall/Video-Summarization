@@ -10,9 +10,9 @@ def crawl_directory(directory):
         Args:
             directory (str) : Audio files directory to crawl
         Returns:
-            tree (generator)     : A generator with all the filepaths
+            A generator with all the filepaths
     """
-    tree = []
+
     subdirs = (folder[0] for folder in os.walk(directory))
 
     for subdir in subdirs:
@@ -32,8 +32,8 @@ def extract_audio(video, output):
 
 def get_audio_features(audio_file, output_file):
     mid_window, mid_step, short_window, short_step = 1, 1, 0.1, 0.1
-    store_csv = True
-    store_short_features = True
+    store_csv = False
+    store_short_features = False
     plot = False
     mF.mid_feature_extraction_to_file(
         audio_file, mid_window, mid_step, short_window, short_step, output_file, store_short_features, store_csv, plot)
