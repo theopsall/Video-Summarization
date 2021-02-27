@@ -43,6 +43,6 @@ Enjoy the video summarization tool & feel free to bother me in case you need hel
 
 **DISCLAIMER**
 
-I have made all the feature extraction scripts, as command line executables, in case, you want to use some tools arbitary out of the main pipeline, you are able to call them from the command line.
+I have made all the feature extraction scripts, as command line executables, in case you want to use some tools arbitrary out of the main pipeline, you are able to call them from the command line.
 
 
