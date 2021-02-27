@@ -1,5 +1,4 @@
-# Video-Summarization
-## Multimodal summarization of user-generated videos from wearable cameras.
+# Multimodal summarization of user-generated videos from wearable cameras.
 
 ![APM](https://img.shields.io/apm/l/vim-mode)
 [![Generic badge](https://img.shields.io/badge/python-3.8-green.svg)](https://shields.io/)
