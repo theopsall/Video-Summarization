@@ -35,10 +35,18 @@ python3 main.py
 ```
 
 
-
+# Citation
+```
+@article{psallidas2021multimodal,
+  title={Multimodal summarization of user-generated videos from wearable cameras},
+  author={Psallidas, Theodoros},
+  year={2021}
+}
+```
 
 Enjoy the video summarization tool & feel free to bother me in case you need help. You can reach me at
 [Theo Psallidas](mailto:theopsall@gmail.com.com?subject=[GitHub]%20Mutlimodal%20Video%20Summarization)
+
 
 **DISCLAIMER**
 
