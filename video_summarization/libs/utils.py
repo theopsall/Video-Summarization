@@ -1,5 +1,6 @@
 import os
 from pickle import load as pload
+from numpy.random import shuffle
 
 import numpy as np
 from scipy.signal import medfilt
@@ -8,6 +9,31 @@ import requests
 from pyAudioAnalysis import MidTermFeatures as mF
 from pyAudioAnalysis import audioBasicIO as iO
 from video_summarization.libs.config import AUDIO_SCALER, VISUAL_SCALER, RF_MODEL, MODEL_DIR, MODEL_URL
+
+
+def crawl_directory(directory: str) -> list:
+    """Crawling data directory
+        Args:
+            directory (str) : The directory to crawl
+        Returns:
+            tree (list)     : A list with all the filepaths
+    """
+    tree = []
+    subdirs = [folder[0] for folder in os.walk(directory)]
+
+    for subdir in subdirs:
+        files = next(os.walk(subdir))[2]
+        for _file in files:
+            tree.append(os.path.join(subdir, _file))
+
+    return tree
+
+
+def shuffle_lists(labels: list, audio: list, visual: list) -> tuple:
+    np.random.seed(47)
+    zipped_list = list(zip(labels, audio, visual))
+    shuffle(zipped_list, )
+    return zip(*zipped_list)
 
 
 def save_model(content) -> None:
@@ -21,7 +47,7 @@ def download_model(url: str) -> None:
     save_model(r.content)
 
 
-def video_exists(video_path:str) -> bool:
+def video_exists(video_path: str) -> bool:
     """
     Checking the existance of the video file
 
@@ -55,6 +81,24 @@ def audio_isolation(video: str) -> bool:
     except:
         print("Audio isolation failed")
         return False
+
+
+def extract_audio(video, output):
+    destination_name = os.path.join(output, video.split(os.sep)[-1] + '.wav')
+    command = "ffmpeg -i '{0}' -q:a 0 -ac 1 -ar 16000  -map a '{1}'".format(video,
+                                                                            destination_name)
+
+    # ffmpeg -i short_supra.mkv -q:a 0 -ac 1 -ar 16000 -map a sample.wav
+    os.system(command)
+
+
+def get_audio_features(audio_file, output_file):
+    mid_window, mid_step, short_window, short_step = 1, 1, 0.1, 0.1
+    store_csv = False
+    store_short_features = False
+    plot = False
+    mF.mid_feature_extraction_to_file(
+        audio_file, mid_window, mid_step, short_window, short_step, output_file, store_short_features, store_csv, plot)
 
 
 def extract_audio_features(audio: str):
@@ -125,7 +169,6 @@ def reshape_features(audio: list, visual: list) -> tuple:
 
 
 def scale_features(data: list, modality: str) -> list:
-
     if modality == "visual":
         scaler = pload(VISUAL_SCALER)
 
@@ -223,7 +266,7 @@ def get_model(model_path: str = MODEL_DIR):
     return model
 
 
-def load_npys_to_matrics(labels: list, videos: list, audio: list) -> tuple:
+def load_npys_to_matrices(labels: list, videos: list, audio: list) -> tuple:
     """
     Loading the numpy files. Visual and audio will be averaged every 5 and 10 rows respectively.
     DISCLAIMER i keep the minimum number of samples between the same video file from label, video and audio features matrices.
