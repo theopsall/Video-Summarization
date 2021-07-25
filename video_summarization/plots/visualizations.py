@@ -27,7 +27,7 @@ def parser() -> argparse.Namespace:
         epilog=usage_example,
         formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument("-i", "--input", required=True, help="Video statistics file)
+    parser.add_argument("-i", "--input", required=True, help="Video statistics file")
 
     return parser.parse_args()
 

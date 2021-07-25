@@ -4,7 +4,7 @@ import sys
 import pandas as pd
 sys.path.insert(0, os.path.join(os.path.dirname(
     os.path.realpath(__file__)), "../"))
-from utilities.utils import crawl_directory
+from video_summarization.utilities.utils import crawl_directory
 
 def parser() -> argparse.Namespace:
     """
