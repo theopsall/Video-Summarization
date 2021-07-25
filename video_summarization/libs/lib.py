@@ -4,13 +4,10 @@ from pickle import load as pload
 import numpy as np
 from scipy.signal import medfilt
 
-from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video
-from video_summarization.libs.pyAudioAnalysis.pyAudioAnalysis import MidTermFeatures as mF
-from video_summarization.libs.pyAudioAnalysis.pyAudioAnalysis import audioBasicIO as iO
-
-PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_DIR = os.path.join(PACKAGE_DIR, 'model')
-RF_MODEL = os.path.join(MODEL_DIR, 'fused_RF.pt')
+# from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video
+from pyAudioAnalysis import MidTermFeatures as mF
+from pyAudioAnalysis import audioBasicIO as iO
+from video_summarization.libs.config import AUDIO_SCALER, VISUAL_SCALER, RF_MODEL, MODEL_DIR
 
 
 def video_exists(video_path) -> bool:
@@ -116,20 +113,6 @@ def reshape_features(audio: list, visual: list) -> tuple:
     return audio, visual
 
 
-def fused_features(audio: list, visual: list) -> list:
-    """
-    Fusing (concatenating) audial and visual features
-
-    Args:
-        audio (list): Audial features matrix. 136 features in total
-        visual (list): Visual features matrix. 88 in total
-
-    Returns:
-        list: With the concatenated features
-    """
-    return np.concatenate((audio, visual), axis=1)
-
-
 def scale_features(data: list, modality: str) -> list:
     """
     Scaling features
@@ -141,13 +124,30 @@ def scale_features(data: list, modality: str) -> list:
         list: scaled features
     """
     if modality == "visual":
-        scaler = pload()
+        scaler = pload(VISUAL_SCALER)
 
     if modality == "aural":
-        scaler = pload()
+        scaler = pload(AUDIO_SCALER)
 
     scaled_features = scaler.transform(data)
     return scaled_features
+
+
+def fused_features(audio: list, visual: list) -> np.ndarray:
+    """
+    Fusing (concatenating) audial and visual features
+
+    Args:
+        audio (list): Audial features matrix. 136 features in total
+        visual (list): Visual features matrix. 88 in total
+
+    Returns:
+        list: With the concatenated features
+    """
+    audio = scale_features(audio, 'aural')
+    visual = scale_features(visual, 'visual')
+
+    return np.concatenate((audio, visual), axis=1)
 
 
 def smooth_prediction(prediction: list, hard_thres: int = 3) -> list:
@@ -237,11 +237,14 @@ def classify(video: str):
     fusion_features = fused_features(reshaped_audial, reshaped_visual)
 
     model = get_model()
-    scaled_features = scale_features(fusion_features)
+    # scaled_features = scale_features(fusion_features)
 
-    prediction = model.predict(scaled_features)
+    prediction = model.predict(fusion_features)
 
     medfilted = median_filtering_prediction(prediction)
     # smoothed_prediction = utils.smooth_prediction(medfilted)
 
     return medfilted
+
+def save_result(result, output):
+    pass
