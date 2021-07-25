@@ -78,12 +78,8 @@ def read_data(tree) -> list:
     return audio
 
 
-def split_data():
-    pass
-
-
 def is_dir(path: str) -> None:
-    pass
+    return os.path.isdir(path)
 
 
 def make_directory(path: str, name: str):
@@ -92,19 +88,8 @@ def make_directory(path: str, name: str):
     except:
         assert f"Cannot create {path}"
 
-
-def save_model(content):
-    open(os.path.join(MODEL_DIR, 'rf_model.pt'), 'wb').write(content)
-
-
-def download_model(url):
-    r = requests.get(url, allow_redirects=True)
-    save_model(r.content)
-
 def parse_arguments() -> argparse.Namespace:
-    '''
-    Command Line Argument Parser
-    '''
+
     epilog = """python3 train -v -l -o  in order to train the classifier 
                 python3 predict -v -o  in order to export the summary of a video file"""
     parser = argparse.ArgumentParser(description="Video Summarization application",
@@ -128,7 +113,3 @@ def parse_arguments() -> argparse.Namespace:
     predict.add_argument("-o", "--output", required=False, help="Output Directory")
 
     return parser.parse_args()
-
-
-if __name__ == "__main__":
-    parse_arguments()

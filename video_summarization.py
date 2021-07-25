@@ -18,12 +18,11 @@ def train(videos: str, labels: str, output: str):
             assert f"Cannot create output directory {output}"
 
     print('Training video summarization classifier')
-    make_classification()
+    make_classification(videos, labels, output)
     pass
 
 
-def extractAndTrain(videos: str, labels: str, output: str):
-    print('Extracting data and Training new  video summarization classifier')
+def extract_and_train(videos: str, labels: str, output: str):
     if not os.path.isdir(videos):
         raise Exception("Videos directory not found!")
     if not os.path.isdir(labels):
@@ -35,6 +34,7 @@ def extractAndTrain(videos: str, labels: str, output: str):
         except:
             assert f"Cannot create output directory {output}"
 
+    print('Extracting data and Training new  video summarization classifier')
     extract_and_make_classification(videos, labels, output)
 
 
@@ -54,11 +54,11 @@ def main() -> None:
     if args.task == "train":
         train(args.videos, args.labels, args.output)
     elif args.task == "extractAndTrain":
-        extractAndTrain(args.videos, args.labels, args.output)
+        extract_and_train(args.videos, args.labels, args.output)
     elif args.task == "predict":
         predict(args.video, args.output)
     else:
-        print(f"You have not choose any video summarization task. \t Video summarization exiting ")
+        print(f"You have not choose any video summarization task.\n\t Video summarization exiting ")
 
 
 if __name__ == "__main__":
