@@ -14,7 +14,7 @@ This repository contains the source code of my Thesis in [MSc Data Science](http
 # Structure
 
 ## Download the dataset
-&nbsp;&nbsp;&nbsp;&nbsp; In order to run from the experiments and train the model from the begining you have to download the aformentioned [dataset](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), otherwise you can use a video collection of your own.
+&nbsp;&nbsp;&nbsp;&nbsp; In order to run from the experiments and train the model from the begining you have to download the aformentioned [dataset](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), otherwise you can use a video collection of your own. In case you want to extract your own features, a superset (unfiltered) of the videos (youtube urls) is provided [here](https://github.com/theopsall/Video-Summarization/tree/refactor/video_summarization/dataset). 
 
 
 ## Clone the repository
