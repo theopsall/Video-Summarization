@@ -1,6 +1,5 @@
-import pickle
-
 import numpy as np
+import pickle
 from imblearn.ensemble import BalancedRandomForestClassifier
 from sklearn.metrics import f1_score, roc_auc_score
 from sklearn.preprocessing import StandardScaler

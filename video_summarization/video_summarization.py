@@ -48,8 +48,11 @@ def predict(video: str, output: str):
     download_model(MODEL_URL)
     classify(video, output)
 
+
 def extract_features(videos, output):
     pass
+
+
 def main() -> None:
     args = parse_arguments()
     if args.task == "train":

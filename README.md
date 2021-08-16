@@ -25,7 +25,8 @@ https://github.com/theopsall/video-summarization.git
 ## Install dependencies
 ```bash
 cd Video-summarization
-pip install -r requirements.txt
+chmod -x install.sh
+./install.sh
 ```
 
 

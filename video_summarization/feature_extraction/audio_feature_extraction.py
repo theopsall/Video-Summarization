@@ -1,8 +1,8 @@
-import os
 import argparse
-from pyAudioAnalysis import audioBasicIO as aIO
-from pyAudioAnalysis import ShortTermFeatures as sF
+import os
 from pyAudioAnalysis import MidTermFeatures as mF
+from pyAudioAnalysis import ShortTermFeatures as sF
+from pyAudioAnalysis import audioBasicIO as aIO
 
 
 def crawl_directory(directory):
@@ -40,7 +40,6 @@ def get_audio_features(audio_file, output_file):
 
 
 def main(tree):
-
     audio_dir = os.path.join(os.getcwd(), 'audio_data')
     if not os.path.isdir(audio_dir):
         os.mkdir(audio_dir)

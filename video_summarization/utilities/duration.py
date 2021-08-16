@@ -1,7 +1,8 @@
-import os
 import cv2
 import argparse
 import shutil
+import os
+
 
 original_dataset = "/media/theo/Data/PycharmProjects/Video-Summarization/DATA/Video/"
 new_dataset_name = "/Video_small/"
