@@ -11,7 +11,7 @@ from video_summarization.utilities.utils import crawl_directory
 def unique_files(files_path: str) -> set:
     """
     Returns the uniques file names from a directory. It will be quiet usefull when you deal with same files seperated in
-    different directories, e.g multi label dataset split in subdirectories
+    different directories, e.g multi label _dataset split in subdirectories
     Args:
         files_path: List contains the path of every file
 
@@ -136,7 +136,7 @@ def parse_arguments() -> argparse.Namespace:
 
     usage_example = """Example of use
         python3 annotations_checker.py -i /media/theo/Hard\ Disk\ 2/PyCharm/Video-Summarization/DATA/Videos -l Annotated_31_12_21 -o labels"""
-    parser = argparse.ArgumentParser(description="Create annotated dataset",
+    parser = argparse.ArgumentParser(description="Create annotated _dataset",
                                      epilog=usage_example,
                                      formatter_class=argparse.RawTextHelpFormatter)
 

@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 
 from video_summarization.libs import utils
 from video_summarization.libs.config import MODEL_URL
-
+from video_summarization.libs.multimodal_movie_analysis.analyze_visual import analyze_visual as aV
 
 def make_classification(audio_features, visual_features, labels, output):
     labels_tree = utils.crawl_directory(labels)
@@ -45,12 +45,13 @@ def make_classification(audio_features, visual_features, labels, output):
 
 
 def extract_and_make_classification(videos, labels, output):
+
     pass
 
 
 def classify(video: str):
     utils.download_model(MODEL_URL)
-    isolated = utils.audio_isolation(video)
+    _ = utils.audio_isolation(video)
     audial_features = utils.extract_audio_features("isolated_audio.wav")
     visual_features = utils.extract_video_features(video)
     reshaped_audial, reshaped_visual = utils.reshape_features(audial_features, visual_features)
@@ -63,6 +64,6 @@ def classify(video: str):
     prediction = model.predict(fusion_features)
 
     medfilted = utils.median_filtering_prediction(prediction)
-    # smoothed_prediction = utils.smooth_prediction(medfilted)
+    smoothed_prediction = utils.smooth_prediction(medfilted)
 
-    return medfilted
+    return smoothed_prediction
