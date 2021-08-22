@@ -401,14 +401,14 @@ def load_npys_to_matrices(labels: list, videos: list, audio: list) -> tuple:
     return files_sizes, labels_matrix, visual_matrix, audio_matrix
 
 
-def split(labels: list, videos: list, audio: list, split_size: float) -> tuple:
+def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> tuple:
     """
     Splitting the data to training and testing data
     Args:
         labels (list): List of the labels
         videos (list): List of the visual features
         audio (list): List of the aural features
-        split_size (float): The split size for training
+        split_size (float): default 0.8, The split size for training size
 
     Returns:
         (tuple): Training and testing tuples of labels accompanied with visual and aural features
