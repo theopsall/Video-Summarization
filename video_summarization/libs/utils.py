@@ -8,7 +8,7 @@ from pyAudioAnalysis import MidTermFeatures as mF
 from pyAudioAnalysis import audioBasicIO as iO
 from scipy.signal import medfilt
 
-from video_summarization.libs.config import AUDIO_SCALER, VISUAL_SCALER, MODEL_DIR
+from video_summarization.config import AUDIO_SCALER, VISUAL_SCALER, MODEL_DIR
 from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video
 
 

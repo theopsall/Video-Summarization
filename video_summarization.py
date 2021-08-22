@@ -1,7 +1,7 @@
-import argparse
 import os
+import argparse
 
-from video_summarization.libs.config import MODEL_URL
+from video_summarization.config import  MODEL_URL
 from video_summarization.libs.lib import make_classification, classify, extract_and_make_classification
 from video_summarization.libs.utils import download_model, download_dataset
 
@@ -12,11 +12,11 @@ def parse_arguments() -> argparse.Namespace:
     Returns:
         (argparse.Namespace): Returns the parsed args of the parser
     """
-    epilog = """python3 train -v -l -o  in order to train the classifier 
-                python3 extractAndTrain -v -l -o  in order to extract the features from new videos and train the 
-                        classifier, you have the option to download our dataset from youtube using the parameter -d 
+    epilog = """python3 train -v -l -o  in order to train the classifier
+                python3 extractAndTrain -v -l -o  in order to extract the features from new videos and train the
+                        classifier, you have the option to download our dataset from youtube using the parameter -d
                 python3 predict -v -o  in order to export the summary of a video file
-                python3 featureExtraction -v -o  in order to use the video_summarization package as audioVisual feature 
+                python3 featureExtraction -v -o  in order to use the video_summarization package as audioVisual feature
                         Extractor
                 """
     parser = argparse.ArgumentParser(description="Video Summarization application",
