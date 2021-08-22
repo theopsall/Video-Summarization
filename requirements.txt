@@ -1,5 +1,4 @@
 git+https://github.com/tyiannak/pyAudioAnalysis.git
-git+https://github.com/tyiannak/multimodal_movie_analysis.git
 certifi==2021.5.30
 charset-normalizer==2.0.3
 cycler==0.10.0

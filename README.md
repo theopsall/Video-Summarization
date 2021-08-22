@@ -9,12 +9,12 @@ This repository contains the source code of my Thesis in [MSc Data Science](http
 ## Intro
 &nbsp;&nbsp;&nbsp;&nbsp; The proposed video summarization technique is based on the audio and visual features extracted using [pyAudioAnalysis](https://github.com/tyiannak/pyAudioAnalysis) and [multimodal_movie_analysis](https://github.com/tyiannak/multimodal_movie_analysis) respectively.
 
-&nbsp;&nbsp;&nbsp;&nbsp; For the purpose of my thesis, i also created a dataset, provided it [here](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), which contains the audio and visual features accompanied with the ground truth annotation files. In order to construct the ground truth for the videos, user-created video summaries was collected using the [video annotator tool](https://github.com/theopsall/video_annotator) and then with the aggregation process we build the final labels.
+&nbsp;&nbsp;&nbsp;&nbsp; For the purpose of my thesis, I also created a dataset, provided it [here](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), which contains the audio and visual features accompanied with the ground truth annotation files. In order to construct the ground truth for the videos, user-created video summaries was collected using the [video annotator tool](https://github.com/theopsall/video_annotator) and then with the aggregation process we build the final labels.
 
 # Structure
 
 ## Download the dataset
-&nbsp;&nbsp;&nbsp;&nbsp; In order to run from the experiments and train the model from the begining you have to download the aformentioned [dataset](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), otherwise you can use a video collection of your own.
+&nbsp;&nbsp;&nbsp;&nbsp; In order to run from the experiments and train the model from the beginning you have to download the aformentioned [dataset](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), otherwise you can use a video collection of your own.
 
 
 ## Clone the repository
@@ -22,7 +22,11 @@ This repository contains the source code of my Thesis in [MSc Data Science](http
 ```bash 
 https://github.com/theopsall/video-summarization.git
 ```
-## Install dependencies
+## Installation
+### Pre-Required libraries 
+1. git
+2. ffmpeg
+### Install VideoSummarization dependencies 
 ```bash
 cd Video-summarization
 chmod -x install.sh
