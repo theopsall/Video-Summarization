@@ -1,12 +1,13 @@
 """Helper funbctions"""
 import argparse
 import os
-import requests
+
 import scipy.io.wavfile as wavfile
-from video_summarization.config import MODEL_DIR
+
 
 def crawl_directory(directory: str) -> list:
-    """Crawling data directory
+    """
+    Crawling data directory
         Args:
             directory (str) : The directory to crawl
         Returns:
@@ -88,28 +89,4 @@ def make_directory(path: str, name: str):
     except:
         assert f"Cannot create {path}"
 
-def parse_arguments() -> argparse.Namespace:
 
-    epilog = """python3 train -v -l -o  in order to train the classifier 
-                python3 predict -v -o  in order to export the summary of a video file"""
-    parser = argparse.ArgumentParser(description="Video Summarization application",
-                                     formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
-
-    tasks = parser.add_subparsers(title="subcommands", description="available tasks", dest="task", metavar="")
-
-    train = tasks.add_parser("train", help="Train video summarization classifier")
-    train.add_argument("-v", "--videos", required=True, help="Video Input Directory")
-    train.add_argument("-l", "--labels", required=True, help="Label Input Directory")
-    train.add_argument("-o", "--output", required=False, help="Output Folder")
-
-    train = tasks.add_parser("extractAndTrain", help="Train video summarization classifier")
-    train.add_argument("-v", "--videos", required=True, help="Video Input Directory")
-    train.add_argument("-l", "--labels", required=True, help="Label Input Directory")
-    train.add_argument("-o", "--output", required=False, help="Output Folder")
-
-    predict = tasks.add_parser("predict",
-                               help="Export the summary of a video")
-    predict.add_argument("-v", "--video", required=True, help="Video Input File")
-    predict.add_argument("-o", "--output", required=False, help="Output Directory")
-
-    return parser.parse_args()
