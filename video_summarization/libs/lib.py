@@ -1,22 +1,37 @@
-import numpy as np
+import os
 import pickle
+
+import numpy as np
 from imblearn.ensemble import BalancedRandomForestClassifier
 from sklearn.metrics import f1_score, roc_auc_score
 from sklearn.preprocessing import StandardScaler
 
 from video_summarization.libs import utils
-from video_summarization.libs.config import MODEL_URL
-from video_summarization.libs.multimodal_movie_analysis.analyze_visual import analyze_visual as aV
 
-def make_classification(audio_features, visual_features, labels, output):
-    labels_tree = utils.crawl_directory(labels)
-    videos_tree = utils.crawl_directory(visual_features)
-    audio_tree = utils.crawl_directory(audio_features)
+
+def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destination):
+    """
+    Classification of video summarization using already extracted features and labels
+    Args:
+        aural_dir (str): Aural directory with npys files
+        visual_dir (str): Visual directory with npys files
+        labels_dir (str): Labels directory with npys files
+        destination:
+
+    Returns:
+
+    """
+    aural_tree = utils.crawl_directory(aural_dir)
+    visual_tree = utils.crawl_directory(visual_dir)
+    labels_tree = utils.crawl_directory(labels_dir)
+
+    aural_tree.sort()
+    visual_tree.sort()
     labels_tree.sort()
-    videos_tree.sort()
-    audio_tree.sort()
-    labels_tree, audio_tree, videos_tree = utils.shuffle_lists(labels_tree, audio_tree, videos_tree)
-    files_sizes, labels_matrix, visual_matrix, audio_matrix = utils.load_npys_to_matrices()
+
+    labels_tree, aural_tree, visual_tree = utils.shuffle_lists(labels_tree, aural_tree, visual_tree)
+    files_sizes, labels_matrix, visual_matrix, audio_matrix = utils.load_npys_to_matrices(labels_tree, aural_tree,
+                                                                                          visual_tree)
     train_labels, train_visual, train_audio, test_labels, test_visual, test_audio = utils.split(labels_matrix,
                                                                                                 visual_matrix,
                                                                                                 audio_matrix, 0.8)
@@ -41,17 +56,42 @@ def make_classification(audio_features, visual_features, labels, output):
     print(
         f"--> ROC AUC: Random Forest on Fused features is: {roc_auc_score(test_labels, preds_prob[:, 1]) * 100:.2f} %")
 
-    pickle.dump(fusion_model, open("fusion_RF.pt", 'wb'))
+    pickle.dump(fusion_model, open(os.path.join(destination, "fusion_RF.pt"), 'wb'))
 
 
-def extract_and_make_classification(videos, labels, output):
+def features_extraction(videos_dir: str, destination:str):
+    """
+    Feature Extraction
+    Args:
+        videos_dir (str): Videos directory
+        destination (str): Destination directory to store the features
 
-    pass
+    Returns:
+
+    """
+    print("Feature Extraction process Completed")
 
 
-def classify(video: str):
-    utils.download_model(MODEL_URL)
-    _ = utils.audio_isolation(video)
+
+def extract_and_make_classification(videos_dir: str, labels_dir: str, destination: str):
+    # features_extraction()
+    # make_classification(aural_dir, visual_dir, labels_dir, destination)
+    print("Feature Extraction and Classification processes Completed")
+
+
+def classify(video: str) -> np.ndarray:
+    """
+    Make prediction of the interesting seconds of one video
+    Args:
+        video (str): Video's path
+
+    Returns:
+
+    """
+    if not utils.video_exists(video):
+        assert f"Video: {video} not Found"
+
+    _audio = utils.audio_isolation(video)
     audial_features = utils.extract_audio_features("isolated_audio.wav")
     visual_features = utils.extract_video_features(video)
     reshaped_audial, reshaped_visual = utils.reshape_features(audial_features, visual_features)
