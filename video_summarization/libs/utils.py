@@ -1,22 +1,27 @@
 import os
 from pickle import load as pload
-from numpy.random import shuffle
 
 import numpy as np
-from scipy.signal import medfilt
 import requests
-# from multimodal_movie_analysis.analyze_visual.analyze_visual import process_video
+from numpy.random import shuffle
 from pyAudioAnalysis import MidTermFeatures as mF
 from pyAudioAnalysis import audioBasicIO as iO
-from video_summarization.libs.config import AUDIO_SCALER, VISUAL_SCALER, RF_MODEL, MODEL_DIR, MODEL_URL
+from scipy.signal import medfilt
+
+from video_summarization.libs.config import AUDIO_SCALER, VISUAL_SCALER, MODEL_DIR
+from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video
 
 
 def crawl_directory(directory: str) -> list:
-    """Crawling data directory
-        Args:
-            directory (str) : The directory to crawl
-        Returns:
-            tree (list)     : A list with all the filepaths
+    """
+    Crawling DATA directory
+
+    Args:
+        directory (str): The directory path to crawl
+
+    Returns
+        tree (list): A list with all the filepaths
+
     """
     tree = []
     subdirs = [folder[0] for folder in os.walk(directory)]
@@ -29,7 +34,18 @@ def crawl_directory(directory: str) -> list:
     return tree
 
 
-def shuffle_lists(labels: list, audio: list, visual: list) -> tuple:
+def shuffle_lists(labels: list, audio: list, visual: list) -> zip:
+    """
+    Shuffling the lists from all modalities and labels all together to keep the correct order
+
+    Args:
+        labels (list): List of the video labels
+        audio (list): List of the audio features
+        visual (list): List of the visual features
+
+    Returns
+        (tuple): The shuffled lists as tuple
+    """
     np.random.seed(47)
     zipped_list = list(zip(labels, audio, visual))
     shuffle(zipped_list, )
@@ -37,25 +53,47 @@ def shuffle_lists(labels: list, audio: list, visual: list) -> tuple:
 
 
 def save_model(content) -> None:
+    """
+    Storing the Random Forest model pickle to the local machine
+
+    Args:
+        content (): The content from the request
+
+    Returns
+        None
+    """
     print('Saving RF Model')
     open(os.path.join(MODEL_DIR, 'rf_model.pt'), 'wb').write(content)
 
 
 def download_model(url: str) -> None:
+    """
+    Requesting and saving the Random Forest model from the cloud
+
+    Args:
+        url (str): Model's url
+
+    Returns
+
+    """
     print('Downloading RF Model from Cloud')
     r = requests.get(url, allow_redirects=True)
-    save_model(r.content)
+    try:
+        save_model(r.content)
+    except:
+        assert f"Cannot save the model to the local machine"
 
 
 def video_exists(video_path: str) -> bool:
     """
-    Checking the existance of the video file
+    Checking the existence of the video file
 
     Args:
-        video_path ([type]): [description]
+        video_path (str): Video's path in disk
 
-    Returns:
-        bool: [description]
+    Returns
+        (bool): True if video exists, False otherwise
+
     """
     if os.path.isfile(video_path):
         return True
@@ -68,10 +106,10 @@ def audio_isolation(video: str) -> bool:
     in wav file with sampling rate= 1600 in mono channel
 
     Args:
-        video (str): videopath
+        video (str): Video's path in disk
 
-    Returns:
-        bool: True if audio isolated successfully, False otherwise
+    Returns
+        (bool): True if audio isolated successfully, False otherwise
     """
     command = "ffmpeg -i '{0}' -q:a 0 -ac 1 -ar 16000  -map a '{1}'".format(
         video, 'isolated_audio.wav')
@@ -83,7 +121,15 @@ def audio_isolation(video: str) -> bool:
         return False
 
 
-def extract_audio(video, output):
+def extract_audio(video: str, output: str):
+    """
+    Extract audio from every video file
+    Args:
+        video (str): Video path in disk
+        output (str): Destination folder to be stored
+    Returns
+
+    """
     destination_name = os.path.join(output, video.split(os.sep)[-1] + '.wav')
     command = "ffmpeg -i '{0}' -q:a 0 -ac 1 -ar 16000  -map a '{1}'".format(video,
                                                                             destination_name)
@@ -92,7 +138,16 @@ def extract_audio(video, output):
     os.system(command)
 
 
-def get_audio_features(audio_file, output_file):
+def get_audio_features(audio_file: str, output_file: str):
+    """
+    Extract and store audio features using pyAudioAnalysis
+    Args:
+        audio_file (str): Audio path in disk
+        output_file (str): Destination name to store the extraction result
+
+    Returns
+
+    """
     mid_window, mid_step, short_window, short_step = 1, 1, 0.1, 0.1
     store_csv = False
     store_short_features = False
@@ -106,10 +161,10 @@ def extract_audio_features(audio: str):
     Extracting Mid Term audio features
 
     Args:
-        audio (str): Audio filepath
+        audio (str): Audio filepath on disk
 
-    Returns:
-        [list]: mifTerm features
+    Returns
+        (list): A list of midTerm features
     """
 
     [sampling_rate, x] = iO.read_audio_file(audio)
@@ -131,23 +186,33 @@ def extract_video_features(video_path: str,
                            print_flag: bool = False,
                            online_display: bool = False,
                            save_results: bool = True) -> list:
+    """
+    Extracting and storing the visual features of a video using the multimodal_movie_analysis
+    Args:
+        video_path (str): Video's path in disk
+        process_mode (int): Process mode, default 2
+        print_flag (bool): default False,
+        online_display (bool): default False, disable commandline messages
+        save_results (bool): default `True`, store the features
+
+    """
     if not video_exists(video_path):
         raise Exception(f'{video_path} Not Found')
 
     features_stats, f_names_stats, feature_matrix, f_names, \
-    shot_change_times = process_video(video_path, process_mode, print_flag,
+    shot_change_times = process_video(video_path, process_mode, print_flag, \
                                       online_display, save_results)
     return feature_matrix
 
 
-def reshape_features(audio: list, visual: list) -> tuple:
+def reshape_features(audio: np.ndarray, visual: np.ndarray) -> tuple:
     """
     Reshaping the features matrices. Visual features are 5 times the audio features
     caused by the 0.2 step in processing video by multimodal_movie_analysis
 
     Args:
-        audio (list): Audial features matrix. 136 features in total
-        visual (list): Visual features matrix. 88 in total
+        audio (np.ndarray): Audial features matrix. 136 features in total
+        visual (np.ndarray): Visual features matrix. 88 in total
 
     Returns:
         tuple: A tuple of the reshape audial and visual feature matrices
@@ -169,6 +234,16 @@ def reshape_features(audio: list, visual: list) -> tuple:
 
 
 def scale_features(data: list, modality: str) -> list:
+    """
+    Load and scale the features
+    Args:
+        data (list): list of features
+        modality:
+
+    Returns:
+        scaled_features (list): List of scaled features
+
+    """
     if modality == "visual":
         scaler = pload(VISUAL_SCALER)
 
@@ -230,17 +305,17 @@ def smooth_prediction(prediction: list, hard_thres: int = 3) -> list:
     return data
 
 
-def median_filtering_prediction(prediction: list, med_thres: int = 5) -> list:
+def median_filtering_prediction(prediction: np.ndarray, med_thres: int = 5) -> np.ndarray:
     """
     Median filtering on predictions in order to change the zeros to ones,
     between of ones in a med_thres window
 
     Args:
-        prediction (list): Predicted video summary
+        prediction (np.ndarray): Predicted video summary
         med_thres (int, optional): Window size. Defaults to 5.
 
     Returns:
-        list: Medfilted predictions
+        (np.ndarray): Medfilted predictions
     """
 
     return medfilt(prediction, med_thres)
@@ -271,7 +346,7 @@ def load_npys_to_matrices(labels: list, videos: list, audio: list) -> tuple:
     Loading the numpy files. Visual and audio will be averaged every 5 and 10 rows respectively.
     DISCLAIMER i keep the minimum number of samples between the same video file from label, video and audio features matrices.
     """
-    print("Nunpy to Matrices have start")
+    print("Numpy to Matrices have start")
     files_sizes = []
     labels_matrix = []
     visual_matrix = []
@@ -293,7 +368,8 @@ def load_npys_to_matrices(labels: list, videos: list, audio: list) -> tuple:
 
             tmp_visual = np.load(videos[idx])
             tmp_audio = np.load(audio[
-                                    idx]).transpose()  # transposed to the same format of visual features (rows = samplles, columns = features)
+                                    idx]).transpose()
+            # transposed to the same format of visual features (rows = samplles, columns = features)
         except ValueError:
             print(f'File in index {idx} with name {videos[idx]} Not loaded')
             continue
@@ -326,16 +402,27 @@ def load_npys_to_matrices(labels: list, videos: list, audio: list) -> tuple:
 
 
 def split(labels: list, videos: list, audio: list, split_size: float) -> tuple:
+    """
+    Splitting the data to training and testing data
+    Args:
+        labels (list): List of the labels
+        videos (list): List of the visual features
+        audio (list): List of the aural features
+        split_size (float): The split size for training
+
+    Returns:
+        (tuple): Training and testing tuples of labels accompanied with visual and aural features
+    """
     if not len(labels) == len(videos) == len(audio):
         raise Exception("Labels, visual features and audio have not the same size")
     if split_size >= 1.0 or split_size <= 0.0:
         raise Exception("Split size is out of bound")
-    trainining_size = int(split_size * len(labels))
-    # first training, second test
-    return np.hstack([label for label in labels[:trainining_size]]), np.vstack(
-        [video for video in videos[:trainining_size]]), np.vstack([audio for audio in audio[:trainining_size]]), \
-           np.hstack([label for label in labels[trainining_size:]]), np.vstack(
-        [video for video in videos[trainining_size:]]), np.vstack([audio for audio in audio[trainining_size:]])
+    training_size = int(split_size * len(labels))
+
+    return np.hstack([label for label in labels[:training_size]]), np.vstack(
+        [video for video in videos[:training_size]]), np.vstack([audio for audio in audio[:training_size]]), \
+           np.hstack([label for label in labels[training_size:]]), np.vstack(
+        [video for video in videos[training_size:]]), np.vstack([audio for audio in audio[training_size:]])
 
 
 def save_result(result, output):
