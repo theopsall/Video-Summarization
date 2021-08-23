@@ -8,7 +8,7 @@ from pyAudioAnalysis import MidTermFeatures as mF
 from pyAudioAnalysis import audioBasicIO as iO
 from scipy.signal import medfilt
 
-from video_summarization.config import AUDIO_SCALER, VISUAL_SCALER, MODEL_DIR
+from video_summarization.config import AUDIO_SCALER, VISUAL_SCALER, MODEL_DIR, DATASET, VIDEOS
 from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video
 
 
@@ -425,6 +425,27 @@ def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> t
         [video for video in videos[training_size:]]), np.vstack([audio for audio in audio[training_size:]])
 
 def download_dataset():
+    if not os.path.isdir(VIDEOS):
+        print(f'{VIDEOS} does not exist, trying to create it')
+        try:
+            os.mkdir(VIDEOS)
+        except:
+            assert f'An error occurred when creating the directory {VIDEOS} '
+
+    dataset_tree = crawl_directory(DATASET)
+    for classname in dataset_tree:
+        try:
+            print(f'Attemping to create {classname} directory in {VIDEOS} directory')
+            video_class = os.path.join(VIDEOS, classname[-1])
+            os.mkdir(video_class)
+        except:
+            assert f'An error occurred in {classname} directory creation'
+        print(f'Downloading videos for class {classname}')
+        try:
+            os.system("youtube-dl -o '"+ video_class + os.sep +"%(uploader)s - %(title)s' -a " + classname )
+        except:
+            print(f'Cannot download video from {classname} class')
+
     pass
 def save_result(result, output):
     pass
