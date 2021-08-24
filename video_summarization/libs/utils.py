@@ -422,6 +422,7 @@ def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> t
 
 
 def download_dataset():
+
     if not os.path.isdir(VIDEOS):
         print(f'{VIDEOS} does not exist, trying to create it')
         try:
@@ -432,7 +433,7 @@ def download_dataset():
     dataset_tree = crawl_directory(DATASET)
     for classname in dataset_tree:
         try:
-            print(f'Attemping to create {classname} directory in {VIDEOS} directory')
+            print(f'Attempting to create {classname} directory in {VIDEOS} directory')
             video_class = os.path.join(VIDEOS, classname[-1])
             os.mkdir(video_class)
         except:
