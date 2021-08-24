@@ -156,6 +156,27 @@ def get_audio_features(audio_file: str, output_file: str):
     mF.mid_feature_extraction_to_file(
         audio_file, mid_window, mid_step, short_window, short_step, output_file, store_short_features, store_csv, plot)
 
+def store_audio_features(tree: list):
+    audio_dir = os.path.join(os.getcwd(), 'audio_data')
+    if not os.path.isdir(audio_dir):
+        os.mkdir(audio_dir)
+    audio_features = os.path.join(os.getcwd(), 'audio_features')
+    if not os.path.isdir(audio_features):
+        os.mkdir(audio_features)
+    for filename in tree:
+        destination = os.path.join(audio_dir, filename.split(os.sep)[-2])
+        feature_destination = os.path.join(
+            audio_features, filename.split(os.sep)[-2])
+        if not os.path.isdir(destination):
+            os.makedirs(destination)
+        if not os.path.isdir(feature_destination):
+            os.makedirs(feature_destination)
+        extract_audio(filename, destination)
+        destination_name = os.path.join(
+            destination, filename.split(os.sep)[-1] + '.wav')
+        feature_destination = os.path.join(
+            feature_destination, filename.split(os.sep)[-1] + '.wav')
+        get_audio_features(destination_name, feature_destination)
 
 def extract_audio_features(audio: str):
     """
