@@ -112,7 +112,9 @@ def predict(video: str, dst: str):
             assert f"Cannot create destination directory {dst}"
     download_model(MODEL_URL)
     prediction = classify(video)
-    # save_prediction(prediction, dst)
+    if not os.path.isdir(dst):
+        assert f"Destination {dst} directory not found. Please give a proper destination folder to store the prediction"
+    utils.save_prediction(prediction, dst)
 
 
 def extract_features(videos, output):

@@ -1,4 +1,5 @@
 import os
+from pickle import dump as pdump
 from pickle import load as pload
 
 import numpy as np
@@ -445,5 +446,28 @@ def download_dataset():
     pass
 
 
-def save_result(result, output):
-    pass
+def save_prediction(prediction: np.ndarray, dst: str):
+    """
+    Saving the prediction result from classification
+    Args:
+        prediction (np.ndarray): The prediction array with the significant seconds of video duration as classified
+                                 from the video summarization
+        dst (str): The destination directory to store the prediction array in .npy extension
+
+    Returns:
+        (bool): True If the prediction saved successfully on disk, False otherwise
+    """
+    return np.save(prediction, os.path.join(dst, 'prediction.npy'))
+
+
+def save_model(model, dst: str):
+    """
+    Saving the video summarization model
+    Args:
+        model (): The trained model for video summarization
+        dst (str): The destination directory to store the model in .pt extension
+
+    Returns:
+        (bool): True If the model saved successfully on disk, False otherwise
+    """
+    return pdump(model, open(os.path.join(dst, 'model.pt'), 'wb'))
