@@ -233,25 +233,20 @@ def reshape_features(audio: np.ndarray, visual: np.ndarray) -> tuple:
     return audio, visual
 
 
-def scale_features(data: list, modality: str) -> list:
+def scale_features(aural: np.ndarray, visual: np.ndarray) -> tuple:
     """
-    Load and scale the features
+    Scaling the features from both modalities
     Args:
-        data (list): list of features
-        modality:
+        aural (nd.array): The aural features
+        visual (nd.array): The visual features
 
     Returns:
-        scaled_features (list): List of scaled features
-
+        (aural, visual) rescaled features using the already pretrained scalers from our experiment
     """
-    if modality == "visual":
-        scaler = pload(VISUAL_SCALER)
+    visual_scaler = pload(VISUAL_SCALER)
+    aural_scaler = pload(AUDIO_SCALER)
 
-    if modality == "aural":
-        scaler = pload(AUDIO_SCALER)
-
-    scaled_features = scaler.transform(data)
-    return scaled_features
+    return visual_scaler.transform(visual), aural_scaler.transform(aural)
 
 
 def fused_features(audio: list, visual: list) -> np.ndarray:
@@ -424,6 +419,7 @@ def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> t
            np.hstack([label for label in labels[training_size:]]), np.vstack(
         [video for video in videos[training_size:]]), np.vstack([audio for audio in audio[training_size:]])
 
+
 def download_dataset():
     if not os.path.isdir(VIDEOS):
         print(f'{VIDEOS} does not exist, trying to create it')
@@ -442,10 +438,12 @@ def download_dataset():
             assert f'An error occurred in {classname} directory creation'
         print(f'Downloading videos for class {classname}')
         try:
-            os.system("youtube-dl -o '"+ video_class + os.sep +"%(uploader)s - %(title)s' -a " + classname )
+            os.system("youtube-dl -o '" + video_class + os.sep + "%(uploader)s - %(title)s' -a " + classname)
         except:
             print(f'Cannot download video from {classname} class')
 
     pass
+
+
 def save_result(result, output):
     pass

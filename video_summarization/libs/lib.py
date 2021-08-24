@@ -96,10 +96,11 @@ def classify(video: str) -> np.ndarray:
     visual_features = utils.extract_video_features(video)
     reshaped_audial, reshaped_visual = utils.reshape_features(audial_features, visual_features)
 
-    fusion_features = utils.fused_features(reshaped_audial, reshaped_visual)
+    aural_scaled, visual_scaled  = utils.scale_features(reshaped_audial, reshaped_visual)
+
+    fusion_features = utils.fused_features( aural_scaled, visual_scaled)
 
     model = utils.get_model()
-    # scaled_features = scale_features(fusion_features)
 
     prediction = model.predict(fusion_features)
 
