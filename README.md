@@ -22,11 +22,7 @@ This repository contains the source code of my Thesis in [MSc Data Science](http
 ```bash 
 https://github.com/theopsall/video-summarization.git
 ```
-## Installation
-### Pre-Required libraries 
-1. git
-2. ffmpeg
-### Install VideoSummarization dependencies 
+## Installation 
 ```bash
 cd Video-summarization
 chmod -x install.sh
@@ -36,7 +32,12 @@ chmod -x install.sh
 
 ## Running Video Summarization
 ```bash
-python3 main.py 
+python3 train -v -l -o  in order to train the classifier
+python3 extractAndTrain -v -l -o  in order to extract the features from new videos and train the
+  classifier, you have the option to download our dataset from youtube using the parameter -d
+python3 predict -v -o  in order to export the summary of a video file
+python3 featureExtraction -v -o  in order to use the video_summarization package as audioVisual feature
+  Extractor
 ```
 
 
