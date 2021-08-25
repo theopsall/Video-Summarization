@@ -9,12 +9,13 @@ This repository contains the source code of my Thesis in [MSc Data Science](http
 ## Intro
 &nbsp;&nbsp;&nbsp;&nbsp; The proposed video summarization technique is based on the audio and visual features extracted using [pyAudioAnalysis](https://github.com/tyiannak/pyAudioAnalysis) and [multimodal_movie_analysis](https://github.com/tyiannak/multimodal_movie_analysis) respectively.
 
-&nbsp;&nbsp;&nbsp;&nbsp; For the purpose of my thesis, i also created a dataset, provided it [here](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), which contains the audio and visual features accompanied with the ground truth annotation files. In order to construct the ground truth for the videos, user-created video summaries was collected using the [video annotator tool](https://github.com/theopsall/video_annotator) and then with the aggregation process we build the final labels.
+&nbsp;&nbsp;&nbsp;&nbsp; For the purpose of my thesis, I also created a dataset, provided it [here](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), which contains the audio and visual features accompanied with the ground truth annotation files. In order to construct the ground truth for the videos, user-created video summaries was collected using the [video annotator tool](https://github.com/theopsall/video_annotator) and then with the aggregation process we build the final labels.
 
 # Structure
 
-## Download the dataset
-&nbsp;&nbsp;&nbsp;&nbsp; In order to run from the experiments and train the model from the begining you have to download the aformentioned [dataset](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), otherwise you can use a video collection of your own. In case you want to extract your own features, a superset (unfiltered) of the videos (youtube urls) is provided [here](https://github.com/theopsall/Video-Summarization/tree/refactor/video_summarization/dataset). 
+
+## Download the Annotations files
+&nbsp;&nbsp;&nbsp;&nbsp; In order to run from the experiments and train the model from the beginning you have to download the aformentioned [dataset](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), otherwise you can use a video collection of your own.
 
 
 ## Clone the repository
@@ -22,18 +23,55 @@ This repository contains the source code of my Thesis in [MSc Data Science](http
 ```bash 
 https://github.com/theopsall/video-summarization.git
 ```
-## Install dependencies
+## Installation 
 ```bash
 cd Video-summarization
-pip install -r requirements.txt
+chmod -x install.sh
+./install.sh
 ```
 
 
-## Running Video Summarization
-```bash
-python3 main.py 
+## Usage
+### 1. To extract and train the classifier
+```python
+python3 video_summarization.py extractAndTrain -v /home/theo/VIDEOS -l /home/theo/LABELS -o /home/theo/videoSummary  
 ```
+`-v`: The directory containing the video files.
 
+`-l`: The directory containing the annotations files.
+
+`-o`: The directory  to store the final model.
+
+`(-d)`:  Optional, in case you want to download and use the video files from the experiment. 
+
+### 2. To train the classifier (assuming you already have extracted the features)
+```python
+python3 video_summarization.py train -v /home/theo/visual_features -a /home/theo/aural_features -l /home/theo/LABELS -o /home/theo/videoSummary 
+```
+`-v`: The directory with the visual features.
+
+`-a`: The directory with the aural features.
+
+`-l`: The directory containing the annotations files. 
+
+`-o`: The directory  to store the final model.
+
+### 3. To classify a video from the model
+```python
+python3 video_summarization.py predict -v /home/theo/sample.mp4 -o /home/theo/prediction 
+```
+`-v`: The path of the video file.
+
+
+### 4. To extract the features used in video summarization
+```python
+python3 video_summarization.py featureExtraction -v /home/theo/VIDEOS -o /home/theo/FEATURES
+```
+`-v`: The directory containing the video files.
+
+### Annotations
+Annotation contains the proper script to handle the multiple annotations for the same video file, 
+considering the aggregation agreement between the annotations.g
 
 # Citation
 ```
@@ -50,6 +88,6 @@ Enjoy the video summarization tool & feel free to bother me in case you need hel
 
 **DISCLAIMER**
 
-I have made all the feature extraction scripts, as command line executables, in case you want to use some tools arbitrary out of the main pipeline, you are able to call them from the command line.
+I have made some utilities scripts, as command line executables, in case you want to use some tools arbitrary out of the main pipeline, you are able to call them from the command line.
 
 

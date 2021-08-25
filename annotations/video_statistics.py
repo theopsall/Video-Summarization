@@ -1,12 +1,12 @@
-import os
 import argparse
-import sys
-import pandas as pd
-sys.path.insert(0, os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), "../"))
-from utilities.utils import crawl_directory
+import os
 
-def parser() -> argparse.Namespace
+import pandas as pd
+
+from video_summarization.utilities.utils import crawl_directory
+
+
+def parser() -> argparse.Namespace:
     """
     Handling and parsing the command line arguments
 
@@ -48,11 +48,12 @@ def main(annotations: str) -> None:
                 else:
                     videos_stats[user_video] += 1
 
-    data = pd.DataFrame({'Video Name':list(videos_stats.keys()), 'Number of Annotations': list(videos_stats.values())})
+    data = pd.DataFrame({'Video Name': list(videos_stats.keys()), 'Number of Annotations': list(videos_stats.values())})
     data.to_csv("video_stats.csv", index=False)
 
-
     return videos_stats
+
+
 if __name__ == "__main__":
     parser = parser()
     labels = parser.labels

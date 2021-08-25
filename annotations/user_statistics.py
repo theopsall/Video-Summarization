@@ -1,10 +1,13 @@
-import os
 import argparse
+import os
 import sys
+
 import pandas as pd
+
 sys.path.insert(0, os.path.join(os.path.dirname(
     os.path.realpath(__file__)), "../"))
-from utilities.utils import crawl_directory
+from video_summarization.utilities.utils import crawl_directory
+
 
 def parser() -> argparse.Namespace:
     """
@@ -46,7 +49,7 @@ def main(annotations: str) -> None:
                 user_videos = f.read().split('\n')
             for line in user_videos:
                 if len(line) > 1:
-                    if not username in user_stats :
+                    if not username in user_stats:
                         user_stats[username] = 1
                     else:
                         user_stats[username] += 1
