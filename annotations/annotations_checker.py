@@ -1,12 +1,15 @@
-import os
 import argparse
-import pandas as pd
-import numpy as np
-import cv2
+import os
 import sys
+
+import cv2
+import numpy as np
+import pandas as pd
+
 sys.path.insert(0, os.path.join(os.path.dirname(
     os.path.realpath(__file__)), "../"))
 from video_summarization.utilities.utils import crawl_directory
+
 
 def unique_files(files_path: str) -> set:
     """
@@ -56,7 +59,7 @@ def agreement(files_path, filenames, data_set) -> dict:
             continue
         for user_annotation in files_path:
             if csv_file in user_annotation:
-                data = pd.read_csv(user_annotation )
+                data = pd.read_csv(user_annotation)
                 key = user_annotation.split(
                     os.sep)[-2] + str(os.sep) + user_annotation.split(os.sep)[-1]
                 key = os.path.splitext(key)[0]
@@ -123,7 +126,7 @@ def save_npys(dataset: dict, dest_dir: str) -> None:
         dst_class = os.path.join(dest_dir, key.split(os.sep)[0])
         if not check_directory(dst_class):
             os.makedirs(dst_class)
-        np.save( os.path.join(dst_class, key.split(os.sep)[-1]), value)
+        np.save(os.path.join(dst_class, key.split(os.sep)[-1]), value)
 
 
 def parse_arguments() -> argparse.Namespace:

@@ -31,7 +31,7 @@ chmod -x install.sh
 
 
 ## Usage
-###1. To extract and train the classifier
+### 1. To extract and train the classifier
 ```python
 python3 video_summarization.py extractAndTrain -v /home/theo/VIDEOS -l /home/theo/LABELS -o /home/theo/videoSummary  
 ```
@@ -43,7 +43,7 @@ python3 video_summarization.py extractAndTrain -v /home/theo/VIDEOS -l /home/the
 
 `(-d)`:  Optional, in case you want to download and use the video files from the experiment. 
 
-###2. To train the classifier (assuming you already have extracted the features)
+### 2. To train the classifier (assuming you already have extracted the features)
 ```python
 python3 video_summarization.py train -v /home/theo/visual_features -a /home/theo/aural_features -l /home/theo/LABELS -o /home/theo/videoSummary 
 ```
@@ -55,21 +55,19 @@ python3 video_summarization.py train -v /home/theo/visual_features -a /home/theo
 
 `-o`: The directory  to store the final model.
 
-###3. To classify a video from the model
+### 3. To classify a video from the model
 ```python
 python3 video_summarization.py predict -v /home/theo/sample.mp4 -o /home/theo/prediction 
 ```
 `-v`: The path of the video file.
 
-`-o`: The destination directory to store the prediction file.
 
-###4. To extract the features used in video summarization
+### 4. To extract the features used in video summarization
 ```python
 python3 video_summarization.py featureExtraction -v /home/theo/VIDEOS -o /home/theo/FEATURES
 ```
 `-v`: The directory containing the video files.
 
-`-o`: The destination directory to store the features files for both modalities.
 
 
 # Citation
@@ -87,6 +85,6 @@ Enjoy the video summarization tool & feel free to bother me in case you need hel
 
 **DISCLAIMER**
 
-I have made all the feature extraction scripts, as command line executables, in case you want to use some tools arbitrary out of the main pipeline, you are able to call them from the command line.
+I have made some utilities scripts, as command line executables, in case you want to use some tools arbitrary out of the main pipeline, you are able to call them from the command line.
 
 

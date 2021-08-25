@@ -3,6 +3,9 @@ import errno
 import os
 from shutil import move
 
+from video_summarization.config import ALLOWED_EXTENSIONS
+
+
 def crawl_directory(directory: str) -> list:
     """
     Crawling DATA directory
@@ -25,62 +28,34 @@ def crawl_directory(directory: str) -> list:
     return tree
 
 
-def is_wav(filename) -> bool:
+def is_audio_file(filename: str) -> bool:
     """
     Checks if file's extension is wav
-    Parameters
-    ----------
-    filename: File name
 
-    Returns
-    -------
+    Args:
+        filename (str):
+
+    Returns:
+        (bool): True if file in expected audio format, False otherwise
+    """
+
+    return filename.split('.')[-1] in ALLOWED_EXTENSIONS
+
+
+def move_npys(tree: list, dst_dir: str) -> None:
+    """
+    Move .npys files from one directory to an other directory.
+    FYI: Multimodal movie analysis by default stores the feature extracted features files (.npy)
+    on the same folder with the processed video.
+    Args:
+        tree (list): List with all the videos path
+        dst_dir (str): Destination directory to store the .npys. Destination directory will simulate the structure of
+                       the source directory
+
+    Returns:
+        None
 
     """
-    if filename.endswith('.wav'):
-        return True
-    else:
-        return False
-
-
-# def is_mp4(filename) -> bool:
-#     """
-#     Checks if file's extension is mp4
-#     Parameters
-#     ----------
-#     filename: File name
-#
-#     Returns
-#     -------
-#
-#     """
-#     if filename.endswith('.mp4'):
-#         return True
-#     else:
-#         return False
-#
-#
-# def read_data(tree) -> list:
-#     """
-#
-#     Parameters
-#     ----------
-#     tree: List of file paths to read
-#
-#     Returns
-#     -------
-#     audio: List of Sampling rate and data of wav files
-#
-#     """
-#
-#     audio = []
-#
-#     for filename in tree:
-#         if is_wav(filename):
-#             audio.append(wavfile.read(filename))
-#
-#     return audio
-
-def move_npys(tree, dst_dir):
     for filename in tree:
         if filename.endswith(".npy"):
             destination = os.path.join(dst_dir, filename.split(os.sep)[-2])
@@ -89,11 +64,18 @@ def move_npys(tree, dst_dir):
             move(filename, destination)
 
 
-def is_dir(path: str) -> None:
-    try:
-        return os.path.isdir(path)
-    except:
-        assert f'{dir} is not a directory. Start again the process '
+def is_dir(path: str) -> bool:
+    """
+    Checks if the given path argument is directory or not
+    Args:
+        path (str): Path of the directory
+
+    Returns:
+        (bool): True if the directory exists, False otherwise
+
+    """
+
+    return os.path.isdir(path)
 
 
 def init_directory(directory: str):

@@ -11,7 +11,7 @@ from video_summarization.libs import utils
 from video_summarization.utilities.utils import crawl_directory, move_npys
 
 
-def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destination):
+def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destination) -> None:
     """
     Classification of video summarization using already extracted features and labels
     Args:
@@ -21,7 +21,7 @@ def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destin
         destination:
 
     Returns:
-
+        None
     """
     aural_tree = crawl_directory(aural_dir)
     visual_tree = crawl_directory(visual_dir)
@@ -66,7 +66,6 @@ def features_extraction(videos_dir: str):
     Feature Extraction
     Args:
         videos_dir (str): Videos directory
-        destination (str): Destination directory to store the features
 
     Returns:
 
@@ -78,9 +77,17 @@ def features_extraction(videos_dir: str):
     move_npys(videos_tree, VISUAL_FEATURES_DIR)
 
 
-def extract_and_make_classification(videos_dir: str, labels_dir: str, destination: str):
-    # features_extraction()
-    # make_classification(aural_dir, visual_dir, labels_dir, destination)
+def extract_and_make_classification(videos_dir: str, labels_dir: str, destination: str) -> None:
+    """
+    Extract and train a classifier of  the given videos directory
+    Args:
+        videos_dir (str): Path to the videos directory
+        labels_dir (str): Path to the labels directory
+        destination (str): PAth to save the model
+
+    Returns:
+        None
+    """
     print("Feature Extraction and Classification processes Completed")
     features_extraction(videos_dir)
     make_classification(AURAL_FEATURES_DIR, VISUAL_FEATURES_DIR, labels_dir, destination)

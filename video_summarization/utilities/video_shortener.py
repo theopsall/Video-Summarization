@@ -102,5 +102,5 @@ if __name__ == "__main__":
         # Convert mp3 to wav (batch - folder)
         file_shorten(args.input, args.labels, args.output)
     elif args.task == "dirShorten":
-        # Convert fs for a list of wavs stored in a folder
+        # Convert fs for a list of wavs, stored in a folder
         dir_shorten(args.input, args.labels, args.output)
