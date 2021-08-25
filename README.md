@@ -15,7 +15,7 @@ This repository contains the source code of my Thesis in [MSc Data Science](http
 
 
 ## Download the Annotations files
-&nbsp;&nbsp;&nbsp;&nbsp; In order to run from the experiments and train the model from the beginning you have to download the aformentioned [dataset](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), otherwise you can use a video collection of your own.
+&nbsp;&nbsp;&nbsp;&nbsp; In order to run from the experiments and train the model from the beginning you have to download the aforementioned [dataset](https://drive.google.com/drive/folders/1-nBp2zJKXsUe2xa9DtxonNdZ6frwWkMp?usp=sharing), otherwise you can use a video collection of your own.
 
 
 ## Clone the repository
