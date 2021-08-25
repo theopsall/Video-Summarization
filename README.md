@@ -68,7 +68,9 @@ python3 video_summarization.py featureExtraction -v /home/theo/VIDEOS -o /home/t
 ```
 `-v`: The directory containing the video files.
 
-
+### Annotations
+Annotation contains the proper script to handle the multiple annotations for the same video file, 
+considering the aggregation agreement between the annotations.g
 
 # Citation
 ```
