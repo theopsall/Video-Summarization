@@ -6,7 +6,9 @@ from imblearn.ensemble import BalancedRandomForestClassifier
 from sklearn.metrics import f1_score, roc_auc_score
 from sklearn.preprocessing import StandardScaler
 
+from video_summarization.config import VISUAL_FEATURES_DIR, AURAL_FEATURES_DIR
 from video_summarization.libs import utils
+from video_summarization.utilities.utils import crawl_directory, move_npys
 
 
 def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destination):
@@ -21,9 +23,9 @@ def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destin
     Returns:
 
     """
-    aural_tree = utils.crawl_directory(aural_dir)
-    visual_tree = utils.crawl_directory(visual_dir)
-    labels_tree = utils.crawl_directory(labels_dir)
+    aural_tree = crawl_directory(aural_dir)
+    visual_tree = crawl_directory(visual_dir)
+    labels_tree = crawl_directory(labels_dir)
 
     aural_tree.sort()
     visual_tree.sort()
@@ -59,7 +61,7 @@ def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destin
     pickle.dump(fusion_model, open(os.path.join(destination, "fusion_RF.pt"), 'wb'))
 
 
-def features_extraction(videos_dir: str, destination:str):
+def features_extraction(videos_dir: str, destination: str):
     """
     Feature Extraction
     Args:
@@ -72,11 +74,15 @@ def features_extraction(videos_dir: str, destination:str):
     print("Feature Extraction process Completed")
 
 
-
 def extract_and_make_classification(videos_dir: str, labels_dir: str, destination: str):
     # features_extraction()
     # make_classification(aural_dir, visual_dir, labels_dir, destination)
     print("Feature Extraction and Classification processes Completed")
+    videos_tree = crawl_directory(videos_dir)
+    utils.store_audio_features(videos_tree)
+    utils.extract_video_dir_features(videos_tree)
+    move_npys(videos_tree, VISUAL_FEATURES_DIR)
+    make_classification(AURAL_FEATURES_DIR, VISUAL_FEATURES_DIR, labels_dir, destination)
 
 
 def classify(video: str) -> np.ndarray:
@@ -96,9 +102,9 @@ def classify(video: str) -> np.ndarray:
     visual_features = utils.extract_video_features(video)
     reshaped_audial, reshaped_visual = utils.reshape_features(audial_features, visual_features)
 
-    aural_scaled, visual_scaled  = utils.scale_features(reshaped_audial, reshaped_visual)
+    aural_scaled, visual_scaled = utils.scale_features(reshaped_audial, reshaped_visual)
 
-    fusion_features = utils.fused_features( aural_scaled, visual_scaled)
+    fusion_features = utils.fused_features(aural_scaled, visual_scaled)
 
     model = utils.get_model()
 

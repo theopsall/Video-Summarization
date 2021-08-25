@@ -1,3 +1,6 @@
+'''
+dummy script to cut videos bigger than 15minutes
+'''
 import cv2
 import argparse
 import shutil
@@ -44,16 +47,11 @@ def parse_arguments():
 
 
 def main():
-    pass
-
-
-# 15 minutes = 900 seconds
-if __name__ == '__main__':
     original_tree = crawl_directory(original_dataset)
     for filename in original_tree:
         frame_count, fps = get_duration(filename)
         if fps != 0:
-            duration = frame_count/fps
+            duration = frame_count / fps
             if (duration <= 900):
                 destination = filename.replace("/Video/", new_dataset_name)
                 dst_dir = os.path.join(*destination.split(os.sep)[-3:-1])
@@ -62,3 +60,9 @@ if __name__ == '__main__':
                     os.makedirs(dst_dir)
                 # print(filename)
                 shutil.copy(filename, destination)
+
+
+
+# 15 minutes = 900 seconds
+if __name__ == '__main__':
+    main()

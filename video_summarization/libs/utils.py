@@ -9,30 +9,11 @@ from pyAudioAnalysis import MidTermFeatures as mF
 from pyAudioAnalysis import audioBasicIO as iO
 from scipy.signal import medfilt
 
-from video_summarization.config import AUDIO_SCALER, VISUAL_SCALER, MODEL_DIR, DATASET, VIDEOS
-from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video
-
-
-def crawl_directory(directory: str) -> list:
-    """
-    Crawling DATA directory
-
-    Args:
-        directory (str): The directory path to crawl
-
-    Returns
-        tree (list): A list with all the filepaths
-
-    """
-    tree = []
-    subdirs = [folder[0] for folder in os.walk(directory)]
-
-    for subdir in subdirs:
-        files = next(os.walk(subdir))[2]
-        for _file in files:
-            tree.append(os.path.join(subdir, _file))
-
-    return tree
+from video_summarization.config import AUDIO_SCALER, VISUAL_SCALER, MODEL_DIR, DATASET, AUDIO_DATA_DIR, \
+    AURAL_FEATURES_DIR
+from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video, \
+    dir_process_video
+from video_summarization.utilities.utils import is_dir, init_directory
 
 
 def shuffle_lists(labels: list, audio: list, visual: list) -> zip:
@@ -156,27 +137,24 @@ def get_audio_features(audio_file: str, output_file: str):
     mF.mid_feature_extraction_to_file(
         audio_file, mid_window, mid_step, short_window, short_step, output_file, store_short_features, store_csv, plot)
 
+
 def store_audio_features(tree: list):
-    audio_dir = os.path.join(os.getcwd(), 'audio_data')
-    if not os.path.isdir(audio_dir):
-        os.mkdir(audio_dir)
-    audio_features = os.path.join(os.getcwd(), 'audio_features')
-    if not os.path.isdir(audio_features):
-        os.mkdir(audio_features)
+    is_dir(AUDIO_DATA_DIR)
+
+    is_dir(AURAL_FEATURES_DIR)
     for filename in tree:
-        destination = os.path.join(audio_dir, filename.split(os.sep)[-2])
+        destination = os.path.join(AUDIO_DATA_DIR, filename.split(os.sep)[-2])
         feature_destination = os.path.join(
-            audio_features, filename.split(os.sep)[-2])
-        if not os.path.isdir(destination):
-            os.makedirs(destination)
-        if not os.path.isdir(feature_destination):
-            os.makedirs(feature_destination)
+            AURAL_FEATURES_DIR, filename.split(os.sep)[-2])
+        init_directory(destination)
+        init_directory(feature_destination)
         extract_audio(filename, destination)
         destination_name = os.path.join(
             destination, filename.split(os.sep)[-1] + '.wav')
         feature_destination = os.path.join(
             feature_destination, filename.split(os.sep)[-1] + '.wav')
         get_audio_features(destination_name, feature_destination)
+
 
 def extract_audio_features(audio: str):
     """
@@ -225,6 +203,30 @@ def extract_video_features(video_path: str,
     shot_change_times = process_video(video_path, process_mode, print_flag, \
                                       online_display, save_results)
     return feature_matrix
+
+
+def extract_video_dir_features(videos_dir: str,
+                               process_mode: int = 2,
+                               print_flag: bool = False,
+                               online_display: bool = False,
+                               save_results: bool = True) -> list:
+    """
+    Extracting and storing the visual features of a video using the multimodal_movie_analysis
+    Args:
+        videos_dir (str): Videos directory in disk
+        process_mode (int): Process mode, default 2
+        print_flag (bool): default False,
+        online_display (bool): default False, disable commandline messages
+        save_results (bool): default `True`, store the features
+
+    """
+    if not video_exists(videos_dir):
+        raise Exception(f'{videos_dir} Not Found')
+
+    for class_name in os.listdir(videos_dir):
+        class_dir = os.path.join(videos_dir, class_name)
+        features_all, video_files_list, f_names = dir_process_video(videos_dir, process_mode, print_flag, \
+                                                                    online_display, save_results)
 
 
 def reshape_features(audio: np.ndarray, visual: np.ndarray) -> tuple:
@@ -443,7 +445,6 @@ def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> t
 
 
 def download_dataset():
-
     if not os.path.isdir(VIDEOS):
         print(f'{VIDEOS} does not exist, trying to create it')
         try:
