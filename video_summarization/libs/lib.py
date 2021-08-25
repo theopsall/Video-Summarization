@@ -61,7 +61,7 @@ def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destin
     pickle.dump(fusion_model, open(os.path.join(destination, "fusion_RF.pt"), 'wb'))
 
 
-def features_extraction(videos_dir: str, destination: str):
+def features_extraction(videos_dir: str):
     """
     Feature Extraction
     Args:
@@ -72,16 +72,17 @@ def features_extraction(videos_dir: str, destination: str):
 
     """
     print("Feature Extraction process Completed")
+    videos_tree = crawl_directory(videos_dir)
+    utils.store_audio_features(videos_tree)
+    utils.extract_video_dir_features(videos_tree)
+    move_npys(videos_tree, VISUAL_FEATURES_DIR)
 
 
 def extract_and_make_classification(videos_dir: str, labels_dir: str, destination: str):
     # features_extraction()
     # make_classification(aural_dir, visual_dir, labels_dir, destination)
     print("Feature Extraction and Classification processes Completed")
-    videos_tree = crawl_directory(videos_dir)
-    utils.store_audio_features(videos_tree)
-    utils.extract_video_dir_features(videos_tree)
-    move_npys(videos_tree, VISUAL_FEATURES_DIR)
+    features_extraction(videos_dir)
     make_classification(AURAL_FEATURES_DIR, VISUAL_FEATURES_DIR, labels_dir, destination)
 
 
