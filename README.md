@@ -34,7 +34,7 @@ chmod -x install.sh
 ## Usage
 ### 1. To extract and train the classifier
 ```python
-python3 video_summarization.py extractAndTrain -v /home/theo/VIDEOS -l /home/theo/LABELS -o /home/theo/videoSummary  
+python3 video_summarization.py extractAndTrain -v /home/theo/VIDEOS -l /home/theo/LABELS -o /home/theo/videoSummary -d  
 ```
 `-v`: The directory containing the video files.
 
@@ -58,14 +58,14 @@ python3 video_summarization.py train -v /home/theo/visual_features -a /home/theo
 
 ### 3. To classify a video from the model
 ```python
-python3 video_summarization.py predict -v /home/theo/sample.mp4 -o /home/theo/prediction 
+python3 video_summarization.py predict -v /home/theo/sample.mp4
 ```
 `-v`: The path of the video file.
 
 
 ### 4. To extract the features used in video summarization
 ```python
-python3 video_summarization.py featureExtraction -v /home/theo/VIDEOS -o /home/theo/FEATURES
+python3 video_summarization.py featureExtraction -v /home/theo/VIDEOS
 ```
 `-v`: The directory containing the video files.
 
