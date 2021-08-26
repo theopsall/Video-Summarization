@@ -141,3 +141,4 @@ DATA/
 venv/
 video_summarization/model/
 video_summarization/libs/multimodal_movie_analysis/
+classification.ipynb
