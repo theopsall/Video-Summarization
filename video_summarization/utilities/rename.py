@@ -53,9 +53,8 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def main():
-    parser = parse_arguments()
-    tree = crawl_directory(parser.input)
+def rename(input_dir):
+    tree = crawl_directory(input_dir)
     for filename in tree:
         removed = filename.maketrans(grToLat)
         dst = filename.translate(removed)
@@ -65,5 +64,8 @@ def main():
 
 if __name__ == "__main__":
     print("Starting renaming process")
-    main()
+    parser = parse_arguments()
+    if not os.path.isdir(parser.input):
+        assert f"Error {parser.input} not found"
+    rename(parser.input)
     print("Renaming process Finished!")

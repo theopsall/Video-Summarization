@@ -10,10 +10,10 @@ from pyAudioAnalysis import audioBasicIO as iO
 from scipy.signal import medfilt
 
 from video_summarization.config import AUDIO_SCALER, VISUAL_SCALER, MODEL_DIR, DATASET, AUDIO_DATA_DIR, \
-    AURAL_FEATURES_DIR
+    AURAL_FEATURES_DIR, VIDEOS_DATA_DIR
 from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video, \
     dir_process_video
-from video_summarization.utilities.utils import is_dir, init_directory
+from video_summarization.utilities.utils import is_dir, init_directory, crawl_directory
 
 
 def shuffle_lists(labels: list, audio: list, visual: list) -> zip:
@@ -445,18 +445,18 @@ def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> t
 
 
 def download_dataset():
-    if not os.path.isdir(VIDEOS):
-        print(f'{VIDEOS} does not exist, trying to create it')
+    if not os.path.isdir(VIDEOS_DATA_DIR):
+        print(f'{VIDEOS_DATA_DIR} does not exist, trying to create it')
         try:
-            os.mkdir(VIDEOS)
+            os.mkdir()
         except:
-            assert f'An error occurred when creating the directory {VIDEOS} '
+            assert f'An error occurred when creating the directory {VIDEOS_DATA_DIR} '
 
     dataset_tree = crawl_directory(DATASET)
     for classname in dataset_tree:
         try:
-            print(f'Attempting to create {classname} directory in {VIDEOS} directory')
-            video_class = os.path.join(VIDEOS, classname[-1])
+            print(f'Attempting to create {classname} directory in {VIDEOS_DATA_DIR} directory')
+            video_class = os.path.join(VIDEOS_DATA_DIR, classname[-1])
             os.mkdir(video_class)
         except:
             assert f'An error occurred in {classname} directory creation'
@@ -466,7 +466,7 @@ def download_dataset():
         except:
             print(f'Cannot download video from {classname} class')
 
-    pass
+    return VIDEOS_DATA_DIR
 
 
 def save_prediction(prediction: np.ndarray, dst: str):

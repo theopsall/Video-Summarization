@@ -5,6 +5,7 @@ from video_summarization.config import MODEL_URL
 from video_summarization.libs.lib import make_classification, classify, extract_and_make_classification, \
     features_extraction
 from video_summarization.libs.utils import download_model, download_dataset, save_prediction
+from video_summarization.utilities.rename import rename
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -148,6 +149,7 @@ def main() -> None:
         if args.d:
             print(f"Given videos directory  {args.videos} ignored, starting downloading the proposed youtube videos")
             _videos_dir = download_dataset()
+            rename(_videos_dir)
         extract_and_train(_videos_dir, args.labels, args.output)
     elif args.task == "predict":
         predict(args.video, args.output)
