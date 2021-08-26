@@ -18,8 +18,8 @@ def parse_arguments() -> argparse.Namespace:
     epilog = """
         python3 video_summarization.py extractAndTrain -v /home/theo/VIDEOS -l /home/theo/LABELS -o /home/theo/videoSummary  
         python3 video_summarization.py train -v /home/theo/visual_features -a /home/theo/aural_features -l /home/theo/LABELS -o /home/theo/videoSummary 
-        python3 video_summarization.py predict -v /home/theo/sample.mp4 -o /home/theo/prediction    
-        python3 video_summarization.py featureExtraction -v /home/theo/VIDEOS -o /home/theo/FEATURES
+        python3 video_summarization.py predict -v /home/theo/sample.mp4   
+        python3 video_summarization.py featureExtraction -v /home/theo/VIDEOS
         """
     parser = argparse.ArgumentParser(description="Video Summarization application",
                                      formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
@@ -31,7 +31,7 @@ def parse_arguments() -> argparse.Namespace:
     _train.add_argument("-v", "--videos", required=True, help="Video Input Directory")
     _train.add_argument("-o", "--output", required=False, help="Output Folder")
 
-    extract_train = tasks.add_parser("extractAndTrain", help="Train video summarization classifier")
+    extract_train = tasks.add_parser("extractAndTrain", help="Extract and Train video summarization classifier")
     extract_train.add_argument("-v", "--videos", required=True, help="Video Input Directory")
     extract_train.add_argument("-l", "--labels", required=True, help="Label Input Directory")
     extract_train.add_argument("-o", "--output", required=False, help="Output Folder")
@@ -40,11 +40,10 @@ def parse_arguments() -> argparse.Namespace:
     _predict = tasks.add_parser("predict",
                                 help="Export the summary of a video")
     _predict.add_argument("-v", "--video", required=True, help="Video Input File")
-    _predict.add_argument("-o", "--output", required=False, help="Output Directory")
 
     _feature_extraction = tasks.add_parser("featureExtraction",
-                                           help="Export the summary of a video")
-    _feature_extraction.add_argument("-v", "--video", required=True, help="Video Input File")
+                                           help="Export the audiovisual features from videos directory")
+    _feature_extraction.add_argument("-v", "--videos", required=True, help="Videos Input Directory")
 
     return parser.parse_args()
 
