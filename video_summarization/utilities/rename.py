@@ -2,7 +2,7 @@ import argparse
 import os
 import re
 
-from utils import crawl_directory
+from video_summarization.utilities.utils import crawl_directory
 
 grToLat = {
     'Α': 'A', 'Ά': 'A', 'α': 'a', 'ά': 'a', 'Β': 'B',
