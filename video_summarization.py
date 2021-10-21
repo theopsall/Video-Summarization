@@ -145,7 +145,7 @@ def main() -> None:
         train(args.videos, args.labels, args.output)
     elif args.task == "extractAndTrain":
         _videos_dir = args.videos
-        if args.d:
+        if args.download:
             print(f"Given videos directory  {args.videos} ignored, starting downloading the proposed youtube videos")
             _videos_dir = download_dataset()
             rename(_videos_dir)
