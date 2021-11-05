@@ -1,6 +1,8 @@
 import argparse
 import os
 
+from torch._C import is_grad_enabled
+
 from video_summarization.config import MODEL_URL
 from video_summarization.libs.lib import (classify,
                                           extract_and_make_classification,
@@ -9,6 +11,7 @@ from video_summarization.libs.lib import (classify,
 from video_summarization.libs.utils import (download_dataset, download_model,
                                             save_prediction)
 from video_summarization.utilities.rename import rename
+from video_summarization.utilities.utils import is_dir
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -55,6 +58,8 @@ def parse_arguments() -> argparse.Namespace:
                                 help="Export the summary of a video")
     _predict.add_argument("-v", "--video", required=True,
                           help="Video Input File")
+    _predict.add_argument("-o", "--output", required=True,
+                          help="Destination directory to store the result")
 
     _feature_extraction = tasks.add_parser("featureExtraction",
                                            help="Export the audiovisual features from videos directory")
@@ -108,11 +113,11 @@ def extract_and_train(videos_dir: str, labels_dir: str, destination: str) -> Non
     Returns:
         None
     """
-    if not os.path.isdir(videos_dir):
+    if not is_dir(videos_dir):
         raise Exception("Videos directory not found!")
-    if not os.path.isdir(labels_dir):
+    if not is_dir(labels_dir):
         raise Exception("Labels directory not found!")
-    if not os.path.isdir(destination):
+    if not is_dir(destination):
         print("Output directory not found!\n \t Trying to create it!")
         try:
             os.mkdir(destination)
@@ -123,7 +128,7 @@ def extract_and_train(videos_dir: str, labels_dir: str, destination: str) -> Non
     extract_and_make_classification(videos_dir, labels_dir, destination)
 
 
-def predict(video: str) -> None:
+def predict(video: str, output: str) -> None:
     """
     Predicts the significant seconds of a video
     Args:
@@ -132,11 +137,17 @@ def predict(video: str) -> None:
     Returns:
 
     """
+    if not is_dir(output):
+        print("Output directory not found!\n \t Trying to create it!")
+        try:
+            os.mkdir(output)
+        except:
+            assert f"Cannot create output directory {output}"
     if not os.path.isfile(video):
         assert f"Video  {video} does not exists"
     download_model(MODEL_URL)
     prediction = classify(video)
-    save_prediction(prediction)
+    save_prediction(prediction, output)
 
 
 def extract_features(videos_dir: str) -> None:
