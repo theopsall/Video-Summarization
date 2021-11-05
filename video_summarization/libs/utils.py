@@ -9,11 +9,11 @@ from pyAudioAnalysis import MidTermFeatures as mF
 from pyAudioAnalysis import audioBasicIO as iO
 from scipy.signal import medfilt
 
-from video_summarization.config import AUDIO_SCALER, VISUAL_SCALER, MODEL_DIR, DATASET, AUDIO_DATA_DIR, \
+from video_summarization.config import AUDIO_SCALER, VISUAL_FEATURES_DIR, VISUAL_SCALER, MODEL_DIR, DATASET, AUDIO_DATA_DIR, \
     AURAL_FEATURES_DIR, VIDEOS_DATA_DIR
 from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video, \
     dir_process_video
-from video_summarization.utilities.utils import is_dir, init_directory, crawl_directory
+from video_summarization.utilities.utils import is_dir, init_directory, crawl_directory, move_npys
 
 
 def shuffle_lists(labels: list, aural: list, visual: list) -> zip:
@@ -138,7 +138,8 @@ def get_audio_features(audio_file: str, output_file: str):
         audio_file, mid_window, mid_step, short_window, short_step, output_file, store_short_features, store_csv, plot)
 
 
-def store_audio_features(tree: list):
+def store_audio_features(video_dir: str):
+    tree = crawl_directory(video_dir)
     is_dir(AUDIO_DATA_DIR)
 
     is_dir(AURAL_FEATURES_DIR)
@@ -227,6 +228,13 @@ def extract_video_dir_features(videos_dir: str,
         class_dir = os.path.join(videos_dir, class_name)
         features_all, video_files_list, f_names = dir_process_video(class_dir, process_mode, print_flag,
                                                                     online_display, save_results)
+
+
+def store_visual_features(videos_dir):
+    tree = crawl_directory(videos_dir)
+    extract_video_dir_features(videos_dir)
+    tree = [name + '.npy' for name in tree]
+    move_npys(tree, VISUAL_FEATURES_DIR)
 
 
 def reshape_features(audio: np.ndarray, visual: np.ndarray) -> tuple:

@@ -5,8 +5,7 @@ import numpy as np
 from imblearn.ensemble import BalancedRandomForestClassifier
 from sklearn.metrics import f1_score, roc_auc_score
 from sklearn.preprocessing import StandardScaler
-
-from video_summarization.config import VISUAL_FEATURES_DIR, AURAL_FEATURES_DIR
+from video_summarization.config import AURAL_FEATURES_DIR, VISUAL_FEATURES_DIR
 from video_summarization.libs import utils
 from video_summarization.utilities.utils import crawl_directory, move_npys
 
@@ -73,11 +72,9 @@ def features_extraction(videos_dir: str):
     Returns:
 
     """
+    utils.store_audio_features(videos_dir)
+    utils.store_visual_features(videos_dir)
     print("Feature Extraction process Completed")
-    videos_tree = crawl_directory(videos_dir)
-    utils.store_audio_features(videos_tree)
-    utils.extract_video_dir_features(videos_dir)
-    move_npys(videos_tree, VISUAL_FEATURES_DIR)
 
 
 def extract_and_make_classification(videos_dir: str, labels_dir: str, destination: str) -> None:
@@ -91,7 +88,7 @@ def extract_and_make_classification(videos_dir: str, labels_dir: str, destinatio
     Returns:
         None
     """
-    print("Feature Extraction and Classification processes Completed")
+    print("Starting Feature Extraction and Classification process")
     features_extraction(videos_dir)
     make_classification(AURAL_FEATURES_DIR,
                         VISUAL_FEATURES_DIR, labels_dir, destination)
