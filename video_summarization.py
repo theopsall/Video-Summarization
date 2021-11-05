@@ -2,9 +2,12 @@ import argparse
 import os
 
 from video_summarization.config import MODEL_URL
-from video_summarization.libs.lib import make_classification, classify, extract_and_make_classification, \
-    features_extraction
-from video_summarization.libs.utils import download_model, download_dataset, save_prediction
+from video_summarization.libs.lib import (classify,
+                                          extract_and_make_classification,
+                                          features_extraction,
+                                          make_classification)
+from video_summarization.libs.utils import (download_dataset, download_model,
+                                            save_prediction)
 from video_summarization.utilities.rename import rename
 
 
@@ -24,31 +27,44 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Video Summarization application",
                                      formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
 
-    tasks = parser.add_subparsers(title="subcommands", description="available tasks", dest="task", metavar="")
+    tasks = parser.add_subparsers(
+        title="subcommands", description="available tasks", dest="task", metavar="")
 
-    _train = tasks.add_parser("train", help="Train video summarization classifier")
-    _train.add_argument("-l", "--labels", required=True, help="Label Input Directory")
-    _train.add_argument("-v", "--videos", required=True, help="Video Input Directory")
+    _train = tasks.add_parser(
+        "train", help="Train video summarization classifier")
+    _train.add_argument(
+        "-v", "--visual", required=True, help="Directory of visual features")
+    _train.add_argument(
+        "-a", "--aural", required=True, help="Directory of aural features")
+    _train.add_argument("-l", "--labels", required=True,
+                        help="Label Input Directory")
     _train.add_argument("-o", "--output", required=False, help="Output Folder")
 
-    extract_train = tasks.add_parser("extractAndTrain", help="Extract and Train video summarization classifier")
-    extract_train.add_argument("-v", "--videos", required=True, help="Video Input Directory")
-    extract_train.add_argument("-l", "--labels", required=True, help="Label Input Directory")
-    extract_train.add_argument("-o", "--output", required=False, help="Output Folder")
-    extract_train.add_argument("-d", "--download", action='store_true', help="Download Youtube Videos")
+    extract_train = tasks.add_parser(
+        "extractAndTrain", help="Extract and Train video summarization classifier")
+    extract_train.add_argument(
+        "-v", "--videos", required=True, help="Videos Directory")
+    extract_train.add_argument(
+        "-l", "--labels", required=True, help="Label Input Directory")
+    extract_train.add_argument(
+        "-o", "--output", required=False, help="Output Folder")
+    extract_train.add_argument(
+        "-d", "--download", action='store_true', help="Download Youtube Videos")
 
     _predict = tasks.add_parser("predict",
                                 help="Export the summary of a video")
-    _predict.add_argument("-v", "--video", required=True, help="Video Input File")
+    _predict.add_argument("-v", "--video", required=True,
+                          help="Video Input File")
 
     _feature_extraction = tasks.add_parser("featureExtraction",
                                            help="Export the audiovisual features from videos directory")
-    _feature_extraction.add_argument("-v", "--videos", required=True, help="Videos Input Directory")
+    _feature_extraction.add_argument(
+        "-v", "--videos", required=True, help="Videos Input Directory")
 
     return parser.parse_args()
 
 
-def train(aural_dir: str, visual_dir: str, labels_dir: str, destination: str) -> None:
+def train(visual_dir: str, aural_dir: str, labels_dir: str, destination: str) -> None:
     """
     Classification of video summarization using the already extracted features and labels
     Args:
@@ -61,10 +77,10 @@ def train(aural_dir: str, visual_dir: str, labels_dir: str, destination: str) ->
         None
 
     """
-    if not os.path.isdir(aural_dir):
-        raise Exception("Aural directory not found!")
     if not os.path.isdir(visual_dir):
         raise Exception("Visual directory not found!")
+    if not os.path.isdir(aural_dir):
+        raise Exception("Aural directory not found!")
     if not os.path.isdir(labels_dir):
         raise Exception("Labels directory not found!")
     if not os.path.isdir(destination):
@@ -76,7 +92,8 @@ def train(aural_dir: str, visual_dir: str, labels_dir: str, destination: str) ->
 
     print('Training video summarization classifier')
     make_classification(aural_dir, visual_dir, labels_dir, destination)
-    print(f"Training process completed, random forest is located at {destination}")
+    print(
+        f"Training process completed, random forest is located at {destination}")
 
 
 def extract_and_train(videos_dir: str, labels_dir: str, destination: str) -> None:
@@ -142,11 +159,12 @@ def main() -> None:
     """
     args = parse_arguments()
     if args.task == "train":
-        train(args.videos, args.labels, args.output)
+        train(args.visual, args.aural, args.labels, args.output)
     elif args.task == "extractAndTrain":
         _videos_dir = args.videos
         if args.download:
-            print(f"Given videos directory  {args.videos} ignored, starting downloading the proposed youtube videos")
+            print(
+                f"Given videos directory  {args.videos} ignored, starting downloading the proposed youtube videos")
             _videos_dir = download_dataset()
             rename(_videos_dir)
         extract_and_train(_videos_dir, args.labels, args.output)
