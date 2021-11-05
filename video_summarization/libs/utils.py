@@ -16,7 +16,7 @@ from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_v
 from video_summarization.utilities.utils import is_dir, init_directory, crawl_directory
 
 
-def shuffle_lists(labels: list, audio: list, visual: list) -> zip:
+def shuffle_lists(labels: list, aural: list, visual: list) -> zip:
     """
     Shuffling the lists from all modalities and labels all together to keep the correct order
 
@@ -29,7 +29,7 @@ def shuffle_lists(labels: list, audio: list, visual: list) -> zip:
         (tuple): The shuffled lists as tuple
     """
     np.random.seed(47)
-    zipped_list = list(zip(labels, audio, visual))
+    zipped_list = list(zip(labels, aural, visual))
     shuffle(zipped_list, )
     return zip(*zipped_list)
 
@@ -200,8 +200,8 @@ def extract_video_features(video_path: str,
         raise Exception(f'{video_path} Not Found')
 
     features_stats, f_names_stats, feature_matrix, f_names, \
-    shot_change_times = process_video(video_path, process_mode, print_flag, \
-                                      online_display, save_results)
+        shot_change_times = process_video(video_path, process_mode, print_flag,
+                                          online_display, save_results)
     return feature_matrix
 
 
@@ -213,19 +213,19 @@ def extract_video_dir_features(videos_dir: str,
     """
     Extracting and storing the visual features of a video using the multimodal_movie_analysis
     Args:
-        videos_dir (str): Videos directory in disk
+        videos_dir (list): Directory of videos in disk
         process_mode (int): Process mode, default 2
         print_flag (bool): default False,
         online_display (bool): default False, disable commandline messages
         save_results (bool): default `True`, store the features
 
     """
-    if not video_exists(videos_dir):
+    if not is_dir(videos_dir):
         raise Exception(f'{videos_dir} Not Found')
 
     for class_name in os.listdir(videos_dir):
         class_dir = os.path.join(videos_dir, class_name)
-        features_all, video_files_list, f_names = dir_process_video(videos_dir, process_mode, print_flag, \
+        features_all, video_files_list, f_names = dir_process_video(class_dir, process_mode, print_flag,
                                                                     online_display, save_results)
 
 
@@ -360,18 +360,19 @@ def get_model(model_path: str = MODEL_DIR):
     return model
 
 
-def load_npys_to_matrices(labels: list, videos: list, audio: list) -> tuple:
+def load_npys_to_matrices(labels: list,  audio: list, videos: list) -> tuple:
     """
     Loading the numpy files. Visual and audio will be averaged every 5 and 10 rows respectively.
     DISCLAIMER i keep the minimum number of samples between the same video file from label, video and audio features matrices.
     """
-    print("Numpy to Matrices have start")
+    print("Loading numpy files!")
     files_sizes = []
     labels_matrix = []
     visual_matrix = []
     audio_matrix = []
     if not len(labels) == len(videos) == len(audio):
-        raise Exception("Labels, visual features and audio have not the same size")
+        raise Exception(
+            "Labels, visual features and audio have not the same size")
     for idx in range(len(labels)):
 
         # load labels, visual and audio in temporary variables
@@ -387,10 +388,11 @@ def load_npys_to_matrices(labels: list, videos: list, audio: list) -> tuple:
 
             tmp_visual = np.load(videos[idx])
             tmp_audio = np.load(audio[
-                                    idx]).transpose()
+                idx]).transpose()
             # transposed to the same format of visual features (rows = samplles, columns = features)
         except ValueError:
-            print(f'File in index {idx} with name {videos[idx]} Not loaded')
+            print(
+                f'File in index {idx} with name {videos[idx]} Failed to load')
             continue
 
         # get min seconds from the same label, visual, audio np file
@@ -408,7 +410,8 @@ def load_npys_to_matrices(labels: list, videos: list, audio: list) -> tuple:
         # keep number of samples divisible with 5
         tmp_visual = tmp_visual[:min_seconds * 5]
         # averaging visual every 5 (Because we have analyze video with .2 step)
-        visual_matrix.append(tmp_visual.transpose().reshape(-1, 5).mean(1).reshape(v_c, -1).transpose())
+        visual_matrix.append(tmp_visual.transpose(
+        ).reshape(-1, 5).mean(1).reshape(v_c, -1).transpose())
 
         tmp_audio = tmp_audio[:min_seconds]
         audio_matrix.append(tmp_audio)
@@ -433,14 +436,15 @@ def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> t
         (tuple): Training and testing tuples of labels accompanied with visual and aural features
     """
     if not len(labels) == len(videos) == len(audio):
-        raise Exception("Labels, visual features and audio have not the same size")
+        raise Exception(
+            "Labels, visual features and audio have not the same size")
     if split_size >= 1.0 or split_size <= 0.0:
         raise Exception("Split size is out of bound")
     training_size = int(split_size * len(labels))
 
     return np.hstack([label for label in labels[:training_size]]), np.vstack(
         [video for video in videos[:training_size]]), np.vstack([audio for audio in audio[:training_size]]), \
-           np.hstack([label for label in labels[training_size:]]), np.vstack(
+        np.hstack([label for label in labels[training_size:]]), np.vstack(
         [video for video in videos[training_size:]]), np.vstack([audio for audio in audio[training_size:]])
 
 
@@ -455,14 +459,16 @@ def download_dataset():
     dataset_tree = crawl_directory(DATASET)
     for classname in dataset_tree:
         try:
-            print(f'Attempting to create {classname} directory in {VIDEOS_DATA_DIR} directory')
+            print(
+                f'Attempting to create {classname} directory in {VIDEOS_DATA_DIR} directory')
             video_class = os.path.join(VIDEOS_DATA_DIR, classname[-1])
             os.mkdir(video_class)
         except:
             assert f'An error occurred in {classname} directory creation'
         print(f'Downloading videos for class {classname}')
         try:
-            os.system("youtube-dl -o '" + video_class + os.sep + "%(uploader)s - %(title)s' -a " + classname)
+            os.system("youtube-dl -o '" + video_class + os.sep +
+                      "%(uploader)s - %(title)s' -a " + classname)
         except:
             print(f'Cannot download video from {classname} class')
 

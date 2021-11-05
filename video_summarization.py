@@ -47,7 +47,7 @@ def parse_arguments() -> argparse.Namespace:
     extract_train.add_argument(
         "-l", "--labels", required=True, help="Label Input Directory")
     extract_train.add_argument(
-        "-o", "--output", required=False, help="Output Folder")
+        "-o", "--output", required=True, help="Output Folder")
     extract_train.add_argument(
         "-d", "--download", action='store_true', help="Download Youtube Videos")
 

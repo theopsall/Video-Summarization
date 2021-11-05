@@ -17,6 +17,7 @@ def crawl_directory(directory):
         for _file in files:
             yield os.path.join(subdir, _file)
 
+
 def move_npys(tree, dst_dir):
     for filename in tree:
         if filename.endswith(".npy"):
@@ -25,9 +26,9 @@ def move_npys(tree, dst_dir):
                 os.makedirs(destination)
             shutil.copy(filename, destination)
 
+
 if __name__ == '__main__':
-    videos= "/media/theo/Hard Disk 2/PyCharm/Video-Summarization/DATA/Video_smaller"
+    videos = "/media/theo/Hard Disk 2/PyCharm/Video-Summarization/DATA/Video_smaller"
     features_directory = "/media/theo/Hard Disk 2/PyCharm/Video-Summarization/DATA/features"
     tree = crawl_directory(videos)
     move_npys(tree, features_directory)
-    

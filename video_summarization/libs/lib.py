@@ -31,7 +31,8 @@ def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destin
     visual_tree.sort()
     labels_tree.sort()
 
-    labels_tree, aural_tree, visual_tree = utils.shuffle_lists(labels_tree, aural_tree, visual_tree)
+    labels_tree, aural_tree, visual_tree = utils.shuffle_lists(
+        labels_tree, aural_tree, visual_tree)
     files_sizes, labels_matrix, visual_matrix, audio_matrix = utils.load_npys_to_matrices(labels_tree, aural_tree,
                                                                                           visual_tree)
     train_labels, train_visual, train_audio, test_labels, test_visual, test_audio = utils.split(labels_matrix,
@@ -53,12 +54,14 @@ def make_classification(aural_dir: str, visual_dir: str, labels_dir: str, destin
                                                   random_state=42)
     fusion_model.fit(train_union, train_labels)
     preds = fusion_model.predict(test_union)
-    print(f"--> F1: Random Forest on Fused features is: {f1_score(test_labels, preds, average='macro') * 100:.2f} %")
+    print(
+        f"--> F1: Random Forest on Fused features is: {f1_score(test_labels, preds, average='macro') * 100:.2f} %")
     preds_prob = fusion_model.predict_proba(test_union)
     print(
         f"--> ROC AUC: Random Forest on Fused features is: {roc_auc_score(test_labels, preds_prob[:, 1]) * 100:.2f} %")
 
-    pickle.dump(fusion_model, open(os.path.join(destination, "fusion_RF.pt"), 'wb'))
+    pickle.dump(fusion_model, open(
+        os.path.join(destination, "fusion_RF.pt"), 'wb'))
 
 
 def features_extraction(videos_dir: str):
@@ -73,7 +76,7 @@ def features_extraction(videos_dir: str):
     print("Feature Extraction process Completed")
     videos_tree = crawl_directory(videos_dir)
     utils.store_audio_features(videos_tree)
-    utils.extract_video_dir_features(videos_tree)
+    utils.extract_video_dir_features(videos_dir)
     move_npys(videos_tree, VISUAL_FEATURES_DIR)
 
 
@@ -90,7 +93,8 @@ def extract_and_make_classification(videos_dir: str, labels_dir: str, destinatio
     """
     print("Feature Extraction and Classification processes Completed")
     features_extraction(videos_dir)
-    make_classification(AURAL_FEATURES_DIR, VISUAL_FEATURES_DIR, labels_dir, destination)
+    make_classification(AURAL_FEATURES_DIR,
+                        VISUAL_FEATURES_DIR, labels_dir, destination)
 
 
 def classify(video: str) -> np.ndarray:
@@ -108,9 +112,11 @@ def classify(video: str) -> np.ndarray:
     _audio = utils.audio_isolation(video)
     audial_features = utils.extract_audio_features("isolated_audio.wav")
     visual_features = utils.extract_video_features(video)
-    reshaped_audial, reshaped_visual = utils.reshape_features(audial_features, visual_features)
+    reshaped_audial, reshaped_visual = utils.reshape_features(
+        audial_features, visual_features)
 
-    aural_scaled, visual_scaled = utils.scale_features(reshaped_audial, reshaped_visual)
+    aural_scaled, visual_scaled = utils.scale_features(
+        reshaped_audial, reshaped_visual)
 
     fusion_features = utils.fused_features(aural_scaled, visual_scaled)
 
