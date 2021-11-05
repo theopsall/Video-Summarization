@@ -8,12 +8,15 @@ from numpy.random import shuffle
 from pyAudioAnalysis import MidTermFeatures as mF
 from pyAudioAnalysis import audioBasicIO as iO
 from scipy.signal import medfilt
-
-from video_summarization.config import AUDIO_SCALER, VISUAL_FEATURES_DIR, VISUAL_SCALER, MODEL_DIR, DATASET, AUDIO_DATA_DIR, \
-    AURAL_FEATURES_DIR, VIDEOS_DATA_DIR
-from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import process_video, \
-    dir_process_video
-from video_summarization.utilities.utils import is_dir, init_directory, crawl_directory, move_npys
+from video_summarization.config import (AUDIO_DATA_DIR, AUDIO_SCALER,
+                                        AURAL_FEATURES_DIR, DATASET, MODEL_DIR,
+                                        VIDEOS_DATA_DIR, VISUAL_FEATURES_DIR,
+                                        VISUAL_SCALER)
+from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import (
+    dir_process_video, process_video)
+from video_summarization.utilities.utils import (crawl_directory,
+                                                 init_directory, is_dir,
+                                                 move_npys)
 
 
 def shuffle_lists(labels: list, aural: list, visual: list) -> zip:
@@ -34,7 +37,7 @@ def shuffle_lists(labels: list, aural: list, visual: list) -> zip:
     return zip(*zipped_list)
 
 
-def save_model(content) -> None:
+def save_default_model(content) -> None:
     """
     Storing the Random Forest model pickle to the local machine
 
@@ -45,6 +48,8 @@ def save_model(content) -> None:
         None
     """
     print('Saving RF Model')
+    if not is_dir(MODEL_DIR):
+        init_directory(MODEL_DIR)
     open(os.path.join(MODEL_DIR, 'rf_model.pt'), 'wb').write(content)
 
 
@@ -61,7 +66,7 @@ def download_model(url: str) -> None:
     print('Downloading RF Model from Cloud')
     r = requests.get(url, allow_redirects=True)
     try:
-        save_model(r.content)
+        save_default_model(r.content)
     except:
         assert f"Cannot save the model to the local machine"
 

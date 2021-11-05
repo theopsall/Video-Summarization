@@ -88,7 +88,7 @@ def init_directory(directory: str):
         None
     """
     try:
-        print(f'Trying to create {directory}, in order to store aural features ')
+        print(f'Trying to create {directory} ')
         os.makedirs(directory)
     except OSError as e:
         if e.errno == errno.EEXIST:

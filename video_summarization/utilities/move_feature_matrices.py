@@ -1,6 +1,6 @@
 import os
-from glob import glob
 import shutil
+from glob import glob
 
 
 def crawl_directory(directory):
