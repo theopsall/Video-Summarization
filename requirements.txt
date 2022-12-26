@@ -18,7 +18,7 @@ numpy==1.22.0
 opencv-python==4.5.2.54
 packaging==21.0
 pandas==1.0.3
-Pillow==9.0.1
+Pillow==9.3.0
 plotly==4.1.1
 pyAudioAnalysis==0.3.7
 pycodestyle==2.8.0
