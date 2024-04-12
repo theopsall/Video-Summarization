@@ -46,5 +46,5 @@ torchaudio==0.10.0+cu113
 torchvision==0.11.1+cu113
 tqdm==4.46.0
 typing-extensions==3.10.0.2
-urllib3==1.26.6
+urllib3==1.26.18
 xgboost==1.4.2
