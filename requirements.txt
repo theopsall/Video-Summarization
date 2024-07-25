@@ -39,7 +39,7 @@ threadpoolctl==2.2.0
 tifffile==2021.11.2
 toml==0.10.2
 --find https://download.pytorch.org/whl/cu113/torch_stable.html
-torch==1.13.1 
+torch==2.2.0 
 --find https://download.pytorch.org/whl/cu113/torch_stable.html
 torchaudio==0.10.0+cu113
 --find https://download.pytorch.org/whl/cu113/torch_stable.html
