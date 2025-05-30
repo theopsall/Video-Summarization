@@ -26,11 +26,11 @@ def parse_arguments() -> argparse.Namespace:
     """
     epilog = """
         python3 video_summarization.py extractAndTrain -v /home/theo/VIDEOS -l /home/theo/LABELS \
-            -o /home/theo/videoSummary  
+            -o /home/theo/videoSummary
         python3 video_summarization.py train -v /home/theo/visual_features -a /home/theo/aural_features \
-            -l /home/theo/LABELS -o /home/theo/videoSummary 
-        python3 video_summarization.py predict -v /home/theo/sample.mp4   
-        python3 video_summarization.py featureExtraction -v /home/theo/VIDEOS
+            -l /home/theo/LABELS -o /home/theo/videoSummary
+        python3 video_summarization.py predict -v /home/theo/sample.mp4
+        python3 video_summarization.py extract_features -v /home/theo/VIDEOS
         """
     parser = argparse.ArgumentParser(
         description="Video Summarization application",
@@ -74,7 +74,7 @@ def parse_arguments() -> argparse.Namespace:
     )
 
     _feature_extraction = tasks.add_parser(
-        "featureExtraction",
+        "extract_features",
         help="Export the audiovisual features from videos directory",
     )
     _feature_extraction.add_argument(
