@@ -5,10 +5,10 @@ from glob import glob
 
 def crawl_directory(directory):
     """Crawling data directory
-        Args:
-            directory (str) : The directory to crawl
-        Returns:
-            A list with all the filepaths
+    Args:
+        directory (str) : The directory to crawl
+    Returns:
+        A list with all the filepaths
     """
     subdirs = [folder[0] for folder in os.walk(directory)]
 
@@ -27,8 +27,10 @@ def move_npys(tree, dst_dir):
             shutil.copy(filename, destination)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     videos = "/media/theo/Hard Disk 2/PyCharm/Video-Summarization/DATA/Video_smaller"
-    features_directory = "/media/theo/Hard Disk 2/PyCharm/Video-Summarization/DATA/features"
+    features_directory = (
+        "/media/theo/Hard Disk 2/PyCharm/Video-Summarization/DATA/features"
+    )
     tree = crawl_directory(videos)
     move_npys(tree, features_directory)

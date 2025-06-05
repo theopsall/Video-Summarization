@@ -1,4 +1,5 @@
 """Helper funbctions"""
+
 import errno
 import os
 from shutil import move
@@ -39,7 +40,7 @@ def is_audio_file(filename: str) -> bool:
         (bool): True if file in expected audio format, False otherwise
     """
 
-    return filename.split('.')[-1] in ALLOWED_EXTENSIONS
+    return filename.split(".")[-1] in ALLOWED_EXTENSIONS
 
 
 def move_npys(tree: list, dst_dir: str) -> None:
@@ -88,12 +89,12 @@ def init_directory(directory: str):
         None
     """
     try:
-        print(f'Trying to create {directory} ')
+        print(f"Trying to create {directory} ")
         os.makedirs(directory)
     except OSError as e:
         if e.errno == errno.EEXIST:
-            print(f'Skipping {directory} creation. Directory already exists.')
+            print(f"Skipping {directory} creation. Directory already exists.")
         else:
             raise
     except:
-        assert f'Cannot create {directory} directory'
+        assert f"Cannot create {directory} directory"

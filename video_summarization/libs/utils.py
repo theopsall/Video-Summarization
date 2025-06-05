@@ -8,15 +8,26 @@ from numpy.random import shuffle
 from pyAudioAnalysis import MidTermFeatures as mF
 from pyAudioAnalysis import audioBasicIO as iO
 from scipy.signal import medfilt
-from video_summarization.config import (AUDIO_DATA_DIR, AUDIO_SCALER,
-                                        AURAL_FEATURES_DIR, DATASET, MODEL_DIR,
-                                        VIDEOS_DATA_DIR, VISUAL_FEATURES_DIR,
-                                        VISUAL_SCALER)
+from video_summarization.config import (
+    AUDIO_DATA_DIR,
+    AUDIO_SCALER,
+    AURAL_FEATURES_DIR,
+    DATASET,
+    MODEL_DIR,
+    VIDEOS_DATA_DIR,
+    VISUAL_FEATURES_DIR,
+    VISUAL_SCALER,
+)
 from video_summarization.libs.multimodal_movie_analysis.analyze_visual.analyze_visual import (
-    dir_process_video, process_video)
-from video_summarization.utilities.utils import (crawl_directory,
-                                                 init_directory, is_dir,
-                                                 move_npys)
+    dir_process_video,
+    process_video,
+)
+from video_summarization.utilities.utils import (
+    crawl_directory,
+    init_directory,
+    is_dir,
+    move_npys,
+)
 
 
 def shuffle_lists(labels: list, aural: list, visual: list) -> zip:
@@ -33,7 +44,9 @@ def shuffle_lists(labels: list, aural: list, visual: list) -> zip:
     """
     np.random.seed(47)
     zipped_list = list(zip(labels, aural, visual))
-    shuffle(zipped_list, )
+    shuffle(
+        zipped_list,
+    )
     return zip(*zipped_list)
 
 
@@ -47,10 +60,10 @@ def save_default_model(content) -> None:
     Returns
         None
     """
-    print('Saving RF Model')
+    print("Saving RF Model")
     if not is_dir(MODEL_DIR):
         init_directory(MODEL_DIR)
-    open(os.path.join(MODEL_DIR, 'rf_model.pt'), 'wb').write(content)
+    open(os.path.join(MODEL_DIR, "rf_model.pt"), "wb").write(content)
 
 
 def download_model(url: str) -> None:
@@ -63,7 +76,7 @@ def download_model(url: str) -> None:
     Returns
 
     """
-    print('Downloading RF Model from Cloud')
+    print("Downloading RF Model from Cloud")
     r = requests.get(url, allow_redirects=True)
     try:
         save_default_model(r.content)
@@ -99,7 +112,8 @@ def audio_isolation(video: str) -> bool:
         (bool): True if audio isolated successfully, False otherwise
     """
     command = "ffmpeg -i '{0}' -q:a 0 -ac 1 -ar 16000  -map a '{1}'".format(
-        video, 'isolated_audio.wav')
+        video, "isolated_audio.wav"
+    )
     try:
         os.system(command)
         return True
@@ -117,9 +131,10 @@ def extract_audio(video: str, output: str):
     Returns
 
     """
-    destination_name = os.path.join(output, video.split(os.sep)[-1] + '.wav')
-    command = "ffmpeg -i '{0}' -q:a 0 -ac 1 -ar 16000  -map a '{1}'".format(video,
-                                                                            destination_name)
+    destination_name = os.path.join(output, video.split(os.sep)[-1] + ".wav")
+    command = "ffmpeg -i '{0}' -q:a 0 -ac 1 -ar 16000  -map a '{1}'".format(
+        video, destination_name
+    )
 
     # ffmpeg -i short_supra.mkv -q:a 0 -ac 1 -ar 16000 -map a sample.wav
     os.system(command)
@@ -140,7 +155,16 @@ def get_audio_features(audio_file: str, output_file: str):
     store_short_features = False
     plot = False
     mF.mid_feature_extraction_to_file(
-        audio_file, mid_window, mid_step, short_window, short_step, output_file, store_short_features, store_csv, plot)
+        audio_file,
+        mid_window,
+        mid_step,
+        short_window,
+        short_step,
+        output_file,
+        store_short_features,
+        store_csv,
+        plot,
+    )
 
 
 def store_audio_features(video_dir: str):
@@ -151,14 +175,17 @@ def store_audio_features(video_dir: str):
     for filename in tree:
         destination = os.path.join(AUDIO_DATA_DIR, filename.split(os.sep)[-2])
         feature_destination = os.path.join(
-            AURAL_FEATURES_DIR, filename.split(os.sep)[-2])
+            AURAL_FEATURES_DIR, filename.split(os.sep)[-2]
+        )
         init_directory(destination)
         init_directory(feature_destination)
         extract_audio(filename, destination)
         destination_name = os.path.join(
-            destination, filename.split(os.sep)[-1] + '.wav')
+            destination, filename.split(os.sep)[-1] + ".wav"
+        )
         feature_destination = os.path.join(
-            feature_destination, filename.split(os.sep)[-1] + '.wav')
+            feature_destination, filename.split(os.sep)[-1] + ".wav"
+        )
         get_audio_features(destination_name, feature_destination)
 
 
@@ -179,19 +206,24 @@ def extract_audio_features(audio: str):
     # sampling_rate = 16000
     # keeping short_features, mid_feature_names := for future use
 
-    mid_features, short_features, mid_feature_names = mF.mid_feature_extraction(x, sampling_rate,
-                                                                                mid_window * sampling_rate,
-                                                                                mid_step * sampling_rate,
-                                                                                short_window * sampling_rate,
-                                                                                short_step * sampling_rate)
+    mid_features, short_features, mid_feature_names = mF.mid_feature_extraction(
+        x,
+        sampling_rate,
+        mid_window * sampling_rate,
+        mid_step * sampling_rate,
+        short_window * sampling_rate,
+        short_step * sampling_rate,
+    )
     return mid_features
 
 
-def extract_video_features(video_path: str,
-                           process_mode: int = 2,
-                           print_flag: bool = False,
-                           online_display: bool = False,
-                           save_results: bool = True) -> list:
+def extract_video_features(
+    video_path: str,
+    process_mode: int = 2,
+    print_flag: bool = False,
+    online_display: bool = False,
+    save_results: bool = True,
+) -> list:
     """
     Extracting and storing the visual features of a video using the multimodal_movie_analysis
     Args:
@@ -203,19 +235,23 @@ def extract_video_features(video_path: str,
 
     """
     if not video_exists(video_path):
-        raise Exception(f'{video_path} Not Found')
+        raise Exception(f"{video_path} Not Found")
 
-    features_stats, f_names_stats, feature_matrix, f_names, \
-        shot_change_times = process_video(video_path, process_mode, print_flag,
-                                          online_display, save_results)
+    features_stats, f_names_stats, feature_matrix, f_names, shot_change_times = (
+        process_video(
+            video_path, process_mode, print_flag, online_display, save_results
+        )
+    )
     return feature_matrix
 
 
-def extract_video_dir_features(videos_dir: str,
-                               process_mode: int = 2,
-                               print_flag: bool = False,
-                               online_display: bool = False,
-                               save_results: bool = True) -> list:
+def extract_video_dir_features(
+    videos_dir: str,
+    process_mode: int = 2,
+    print_flag: bool = False,
+    online_display: bool = False,
+    save_results: bool = True,
+) -> list:
     """
     Extracting and storing the visual features of a video using the multimodal_movie_analysis
     Args:
@@ -227,18 +263,19 @@ def extract_video_dir_features(videos_dir: str,
 
     """
     if not is_dir(videos_dir):
-        raise Exception(f'{videos_dir} Not Found')
+        raise Exception(f"{videos_dir} Not Found")
 
     for class_name in os.listdir(videos_dir):
         class_dir = os.path.join(videos_dir, class_name)
-        features_all, video_files_list, f_names = dir_process_video(class_dir, process_mode, print_flag,
-                                                                    online_display, save_results)
+        features_all, video_files_list, f_names = dir_process_video(
+            class_dir, process_mode, print_flag, online_display, save_results
+        )
 
 
 def store_visual_features(videos_dir):
     tree = crawl_directory(videos_dir)
     extract_video_dir_features(videos_dir)
-    tree = [name + '.npy' for name in tree]
+    tree = [name + ".npy" for name in tree]
     move_npys(tree, VISUAL_FEATURES_DIR)
 
 
@@ -263,7 +300,7 @@ def reshape_features(audio: np.ndarray, visual: np.ndarray) -> tuple:
     min_seconds = min(v_r, a_r)
 
     audio = audio[:min_seconds]
-    visual = visual[:min_seconds * 5]
+    visual = visual[: min_seconds * 5]
     # averaging visual every 5 (Because we have analyze video with .2 step)
     visual = visual.transpose().reshape(-1, 5).mean(1).reshape(v_c, -1).transpose()
 
@@ -297,8 +334,8 @@ def fused_features(audio: list, visual: list) -> np.ndarray:
     Returns:
         list: With the concatenated features
     """
-    audio = scale_features(audio, 'aural')
-    visual = scale_features(visual, 'visual')
+    audio = scale_features(audio, "aural")
+    visual = scale_features(visual, "visual")
 
     return np.concatenate((audio, visual), axis=1)
 
@@ -330,14 +367,16 @@ def smooth_prediction(prediction: list, hard_thres: int = 3) -> list:
                     return data
                 elif data[idx + 1] == 0:
                     count = 0
-                    data[start:idx + 1] = 0
+                    data[start : idx + 1] = 0
         if item == 0:
             start = -1
             count = 0
     return data
 
 
-def median_filtering_prediction(prediction: np.ndarray, med_thres: int = 5) -> np.ndarray:
+def median_filtering_prediction(
+    prediction: np.ndarray, med_thres: int = 5
+) -> np.ndarray:
     """
     Median filtering on predictions in order to change the zeros to ones,
     between of ones in a med_thres window
@@ -365,7 +404,7 @@ def get_model(model_path: str = MODEL_DIR):
         model [type]: The imblearn Random Forest model
     """
     try:
-        with open(model_path, 'rb') as saved_model:
+        with open(model_path, "rb") as saved_model:
             model = pload(saved_model)
     except:
         print("Failed to load model")
@@ -373,7 +412,7 @@ def get_model(model_path: str = MODEL_DIR):
     return model
 
 
-def load_npys_to_matrices(labels: list,  audio: list, videos: list) -> tuple:
+def load_npys_to_matrices(labels: list, audio: list, videos: list) -> tuple:
     """
     Loading the numpy files. Visual and audio will be averaged every 5 and 10 rows respectively.
     DISCLAIMER i keep the minimum number of samples between the same video file from label, video and audio features matrices.
@@ -384,13 +423,10 @@ def load_npys_to_matrices(labels: list,  audio: list, videos: list) -> tuple:
     visual_matrix = []
     audio_matrix = []
     if not len(labels) == len(videos) == len(audio):
-        raise Exception(
-            "Labels, visual features and audio have not the same size")
+        raise Exception("Labels, visual features and audio have not the same size")
     for idx in range(len(labels)):
-
         # load labels, visual and audio in temporary variables
         try:
-
             tmp_label = np.load(labels[idx])
 
             # 1 if the timestamp have been annotated at least from the half annotators of that specific file
@@ -400,12 +436,10 @@ def load_npys_to_matrices(labels: list,  audio: list, videos: list) -> tuple:
             tmp_label[tmp_label >= max_annotators] = 1
 
             tmp_visual = np.load(videos[idx])
-            tmp_audio = np.load(audio[
-                idx]).transpose()
+            tmp_audio = np.load(audio[idx]).transpose()
             # transposed to the same format of visual features (rows = samplles, columns = features)
         except ValueError:
-            print(
-                f'File in index {idx} with name {videos[idx]} Failed to load')
+            print(f"File in index {idx} with name {videos[idx]} Failed to load")
             continue
 
         # get min seconds from the same label, visual, audio np file
@@ -421,10 +455,11 @@ def load_npys_to_matrices(labels: list,  audio: list, videos: list) -> tuple:
         labels_matrix.append(tmp_label[:min_seconds])
         # VISUAL
         # keep number of samples divisible with 5
-        tmp_visual = tmp_visual[:min_seconds * 5]
+        tmp_visual = tmp_visual[: min_seconds * 5]
         # averaging visual every 5 (Because we have analyze video with .2 step)
-        visual_matrix.append(tmp_visual.transpose(
-        ).reshape(-1, 5).mean(1).reshape(v_c, -1).transpose())
+        visual_matrix.append(
+            tmp_visual.transpose().reshape(-1, 5).mean(1).reshape(v_c, -1).transpose()
+        )
 
         tmp_audio = tmp_audio[:min_seconds]
         audio_matrix.append(tmp_audio)
@@ -449,41 +484,50 @@ def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> t
         (tuple): Training and testing tuples of labels accompanied with visual and aural features
     """
     if not len(labels) == len(videos) == len(audio):
-        raise Exception(
-            "Labels, visual features and audio have not the same size")
+        raise Exception("Labels, visual features and audio have not the same size")
     if split_size >= 1.0 or split_size <= 0.0:
         raise Exception("Split size is out of bound")
     training_size = int(split_size * len(labels))
 
-    return np.hstack([label for label in labels[:training_size]]), np.vstack(
-        [video for video in videos[:training_size]]), np.vstack([audio for audio in audio[:training_size]]), \
-        np.hstack([label for label in labels[training_size:]]), np.vstack(
-        [video for video in videos[training_size:]]), np.vstack([audio for audio in audio[training_size:]])
+    return (
+        np.hstack([label for label in labels[:training_size]]),
+        np.vstack([video for video in videos[:training_size]]),
+        np.vstack([audio for audio in audio[:training_size]]),
+        np.hstack([label for label in labels[training_size:]]),
+        np.vstack([video for video in videos[training_size:]]),
+        np.vstack([audio for audio in audio[training_size:]]),
+    )
 
 
 def download_dataset():
     if not os.path.isdir(VIDEOS_DATA_DIR):
-        print(f'{VIDEOS_DATA_DIR} does not exist, trying to create it')
+        print(f"{VIDEOS_DATA_DIR} does not exist, trying to create it")
         try:
             os.mkdir()
         except:
-            assert f'An error occurred when creating the directory {VIDEOS_DATA_DIR} '
+            assert f"An error occurred when creating the directory {VIDEOS_DATA_DIR} "
 
     dataset_tree = crawl_directory(DATASET)
     for classname in dataset_tree:
         try:
             print(
-                f'Attempting to create {classname} directory in {VIDEOS_DATA_DIR} directory')
+                f"Attempting to create {classname} directory in {VIDEOS_DATA_DIR} directory"
+            )
             video_class = os.path.join(VIDEOS_DATA_DIR, classname[-1])
             os.mkdir(video_class)
         except:
-            assert f'An error occurred in {classname} directory creation'
-        print(f'Downloading videos for class {classname}')
+            assert f"An error occurred in {classname} directory creation"
+        print(f"Downloading videos for class {classname}")
         try:
-            os.system("youtube-dl -o '" + video_class + os.sep +
-                      "%(uploader)s - %(title)s' -a " + classname)
+            os.system(
+                "youtube-dl -o '"
+                + video_class
+                + os.sep
+                + "%(uploader)s - %(title)s' -a "
+                + classname
+            )
         except:
-            print(f'Cannot download video from {classname} class')
+            print(f"Cannot download video from {classname} class")
 
     return VIDEOS_DATA_DIR
 
@@ -499,7 +543,7 @@ def save_prediction(prediction: np.ndarray, dst: str):
     Returns:
         (bool): True If the prediction saved successfully on disk, False otherwise
     """
-    return np.save(prediction, os.path.join(dst, 'prediction.npy'))
+    return np.save(prediction, os.path.join(dst, "prediction.npy"))
 
 
 def save_model(model, dst: str):
@@ -512,4 +556,4 @@ def save_model(model, dst: str):
     Returns:
         (bool): True If the model saved successfully on disk, False otherwise
     """
-    return pdump(model, open(os.path.join(dst, 'model.pt'), 'wb'))
+    return pdump(model, open(os.path.join(dst, "model.pt"), "wb"))

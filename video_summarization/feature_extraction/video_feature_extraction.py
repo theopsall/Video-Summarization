@@ -3,7 +3,6 @@ import os
 
 
 def parser():
-
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", required=True, help="Input folder with Videos")
 
