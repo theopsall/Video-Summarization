@@ -471,7 +471,7 @@ def load_npys_to_matrices(labels: list, audio: list, videos: list) -> tuple:
     return files_sizes, labels_matrix, visual_matrix, audio_matrix
 
 
-def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> tuple:
+def split(labels: list, videos: list, audios: list, split_size: float = 0.8) -> tuple:
     """
     Splitting the data to training and testing data
     Args:
@@ -483,7 +483,7 @@ def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> t
     Returns:
         (tuple): Training and testing tuples of labels accompanied with visual and aural features
     """
-    if not len(labels) == len(videos) == len(audio):
+    if not len(labels) == len(videos) == len(audios):
         raise Exception("Labels, visual features and audio have not the same size")
     if split_size >= 1.0 or split_size <= 0.0:
         raise Exception("Split size is out of bound")
@@ -492,10 +492,10 @@ def split(labels: list, videos: list, audio: list, split_size: float = 0.8) -> t
     return (
         np.hstack([label for label in labels[:training_size]]),
         np.vstack([video for video in videos[:training_size]]),
-        np.vstack([audio for audio in audio[:training_size]]),
+        np.vstack([audio for audio in audios[:training_size]]),
         np.hstack([label for label in labels[training_size:]]),
         np.vstack([video for video in videos[training_size:]]),
-        np.vstack([audio for audio in audio[training_size:]]),
+        np.vstack([audio for audio in audios[training_size:]]),
     )
 
 
